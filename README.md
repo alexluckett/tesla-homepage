@@ -187,22 +187,23 @@ Only where the service genuinely differs by market:
 | Channel | Regional? | Target |
 | --- | --- | --- |
 | Prime Video | No — account-scoped | `primevideo.com` |
-
-Prime Video used to point at each market's Amazon storefront, which is the *retail* site's
-video section — the whole Amazon header, basket, department menu and a search box that
-searches everything Amazon sells. `primevideo.com` is the standalone app-style interface,
-so every market uses it. Nothing regional is lost: the account decides the catalogue, as
-it does for Netflix and Disney+.
 | Apple TV | Yes — path-scoped | `tv.apple.com/<cc>` |
 | YouTube | Locale only | `youtube.com/?persist_gl=1&gl=<CC>` |
 | Netflix, Disney+, Paramount+, Crunchyroll | No — account-scoped | Single global domain |
 | National broadcasters | Inherently | Their own domain, listed once per market |
 
-Only the UK, US and German Amazon sites serve a Prime Video storefront at that path. Every
-other market opens `primevideo.com`, which is the site Amazon's
+Prime Video opens `primevideo.com` in every market. It previously used each market's Amazon
+storefront where one existed — the UK, US and Germany — but that path is the *retail* site's
+video section, and it arrives wrapped in the full Amazon header, basket, department menu and
+a search box covering everything Amazon sells. `primevideo.com` is the standalone,
+app-style interface, and it is what Amazon's
 [Prime Video provider page](https://www.primevideo.com/help?nodeId=202064890) names for
-Ireland, Australia, France, Spain, Italy and the Netherlands. Canada is listed there as
-`amazon.ca`, but its storefront path returns 404, so it opens `primevideo.com` too.
+Ireland, Australia, France, Spain, Italy and the Netherlands in any case. Canada is listed
+there as `amazon.ca`, whose storefront path returns 404.
+
+Nothing regional is lost by dropping the Amazon domains: they looked like geo-routing, but
+Prime Video is account-scoped like Netflix and Disney+, so the account decides the catalogue
+either way.
 
 Every URL was checked in September 2026 against the service's official website on
 Wikidata (or Amazon's provider page), the organisation on its TLS certificate, and its
