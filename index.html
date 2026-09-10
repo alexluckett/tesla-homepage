@@ -211,6 +211,7 @@ body{
   var STORE_MARKET = "frontrow.market";
   var STORE_HIDDEN = "frontrow.hidden";
   var STORE_BOOT = "frontrow.boot";
+  var STORE_SEEN = "frontrow.seen";
 
   // Point this at a folder of your own SVGs to override the built-in marks.
   // Each tile loads "<LOGO_DIR>/<channel id>.svg" and keeps what it already
@@ -237,6 +238,16 @@ body{
   }
   function save(key, value) {
     try { window.localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* nothing to do */ }
+  }
+
+  // Whether storage actually works here decides how the first-visit rule below
+  // behaves; without it we cannot tell a first visit from a hundredth.
+  function storageWorks() {
+    try {
+      window.localStorage.setItem("frontrow.probe", "1");
+      window.localStorage.removeItem("frontrow.probe");
+      return true;
+    } catch (e) { return false; }
   }
 
   function findMarket(raw) {
@@ -420,6 +431,17 @@ body{
   function bootstrapFullScreen() {
     if (window.top !== window.self) return false;  // framed: never bootstrap out
     if (isRevisit()) return false;                 // a refresh or a back nav
+
+    // Do not bounce on the very first visit. The bounce lands the page inside
+    // the YouTube app's full-screen view, which has no bookmark control, so
+    // without this there is no moment at which the launcher can be saved to
+    // favourites. One clean pass in the normal browser is enough to do it.
+    // Skipped when storage is unavailable, since then every visit looks like
+    // the first and the launcher would never bootstrap at all.
+    if (storageWorks() && !load(STORE_SEEN, false)) {
+      save(STORE_SEEN, true);
+      return false;
+    }
     if (!bootstraps) return false;                 // ?fs=0 opts out entirely
     if (params.get("boot") === "1") return false;  // this is the return trip
     var last = Number(load(STORE_BOOT, 0)) || 0;

@@ -88,6 +88,15 @@ you in the full-screen view with Front Row already in it. Nothing to hand-encode
 The bounce is skipped when `fs=0` is set, so `?fs=0` remains a complete opt-out: no
 bootstrap and no redirect on the channels either.
 
+**The first visit never bounces**, so the launcher can be bookmarked at all. The bounce
+lands the page inside the YouTube app's full-screen view, which has no bookmark control —
+without this rule there is no moment at which the page can be saved to favourites. So on a
+Tesla: open the URL, and the first load stays in the normal browser with a clean address
+(`?c=uk`). Bookmark it there. Every launch from that bookmark afterwards goes full screen.
+
+The rule is skipped where storage is unavailable, since then every visit looks like the
+first and the launcher would never bootstrap at all.
+
 The bounce is also skipped when the page is running inside a frame, where navigating the
 whole window out to YouTube is never what is wanted.
 
