@@ -186,7 +186,13 @@ Only where the service genuinely differs by market:
 
 | Channel | Regional? | Target |
 | --- | --- | --- |
-| Prime Video | Yes — local storefront | `amazon.co.uk` / `.com` / `.de` `/gp/video/storefront`, else `primevideo.com` |
+| Prime Video | No — account-scoped | `primevideo.com` |
+
+Prime Video used to point at each market's Amazon storefront, which is the *retail* site's
+video section — the whole Amazon header, basket, department menu and a search box that
+searches everything Amazon sells. `primevideo.com` is the standalone app-style interface,
+so every market uses it. Nothing regional is lost: the account decides the catalogue, as
+it does for Netflix and Disney+.
 | Apple TV | Yes — path-scoped | `tv.apple.com/<cc>` |
 | YouTube | Locale only | `youtube.com/?persist_gl=1&gl=<CC>` |
 | Netflix, Disney+, Paramount+, Crunchyroll | No — account-scoped | Single global domain |
