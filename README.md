@@ -79,23 +79,44 @@ written before the change keep working.
 `fs` has no on-screen control by design — it is a property of the bookmark, not an
 everyday setting.
 
+`stay` is separate: it suppresses the bounce for one load and then deletes itself from the
+address bar, so the launcher can be bookmarked at all. See below.
+
 ### Running the launcher itself full screen
 
-The launcher bootstraps itself. Bookmark your deployment's plain URL; on load the page
-bounces once through the YouTube redirect back to itself, so tapping **Go to site** lands
-you in the full-screen view with Front Row already in it. Nothing to hand-encode.
+The launcher bootstraps itself: on load the page bounces once through the YouTube redirect
+back to itself, so tapping **Go to site** lands you in the full-screen view with Front Row
+already in it. Nothing to hand-encode. Use `?stay` to save the bookmark in the first place
+— see below.
 
 The bounce is skipped when `fs=0` is set, so `?fs=0` remains a complete opt-out: no
 bootstrap and no redirect on the channels either.
 
-**The first visit never bounces**, so the launcher can be bookmarked at all. The bounce
-lands the page inside the YouTube app's full-screen view, which has no bookmark control —
-without this rule there is no moment at which the page can be saved to favourites. So on a
-Tesla: open the URL, and the first load stays in the normal browser with a clean address
-(`?c=uk`). Bookmark it there. Every launch from that bookmark afterwards goes full screen.
+#### Bookmarking it on the car
 
-The rule is skipped where storage is unavailable, since then every visit looks like the
-first and the launcher would never bootstrap at all.
+The bounce lands the page inside the YouTube app's full-screen view, which has **no
+bookmark control**. Since it fires the moment you arrive, there is otherwise no point at
+which the launcher can be saved to favourites. `?stay` exists for this:
+
+1. In the car's browser, open your deployment with `?stay` on the end:
+
+   ```
+   https://example.com/?stay
+   ```
+
+2. The page loads normally, in the ordinary browser. It does not jump to YouTube.
+3. `stay` deletes itself from the address bar, which now reads
+   `https://example.com/?c=uk`. That clean URL is what a bookmark captures.
+4. Bookmark it.
+5. Every launch from that bookmark goes full screen.
+
+`?stay` works every time, so it is also the way back if a bookmark is lost or the address
+changes.
+
+**The first visit also never bounces**, which covers a fresh browser without needing
+`?stay` — but it applies only once, so `?stay` is the reliable route. That rule is skipped
+where storage is unavailable, since then every visit would look like the first and the
+launcher would never bootstrap at all.
 
 The bounce is also skipped when the page is running inside a frame, where navigating the
 whole window out to YouTube is never what is wanted.
