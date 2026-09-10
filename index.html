@@ -431,6 +431,10 @@ body{
   function bootstrapFullScreen() {
     if (window.top !== window.self) return false;  // framed: never bootstrap out
     if (isRevisit()) return false;                 // a refresh or a back nav
+    if (params.has("stay")) {                      // "let me bookmark this"
+      save(STORE_SEEN, true);
+      return false;
+    }
 
     // Do not bounce on the very first visit. The bounce lands the page inside
     // the YouTube app's full-screen view, which has no bookmark control, so
@@ -460,6 +464,7 @@ body{
     try {
       var next = new URL(window.location.href);
       next.searchParams.delete("boot");
+      next.searchParams.delete("stay");
       next.searchParams.set("c", market.c);
       if (fsMode === "once") { next.searchParams.delete("fs"); } else { next.searchParams.set("fs", fsMode); }
       window.history.replaceState(null, "", next.toString());
