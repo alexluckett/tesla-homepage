@@ -70,31 +70,45 @@ you tap it.
 
 ## Logos
 
-The tiles ship with a **typographic channel mark** — each service name set in its brand
-colour, with weight and tracking doing the identifying work. No brand artwork is bundled,
-so there is nothing to keep licensed or up to date, and the page makes zero image
-requests.
+Four of the five channel marks are real brand icons, inlined as SVG paths straight into
+`index.html` — nothing to download, no image requests, and they inherit each tile's
+`--tint` so they sit properly on the dark ground.
 
-To use real logos instead, drop SVG files into a folder named after the service ids and
-point `LOGO_DIR` at it, near the top of the `<script>` block:
+They come from **[Simple Icons](https://github.com/simple-icons/simple-icons)** v16.30.0,
+whose repository is released under **CC0-1.0**. The logos themselves remain the trademarks
+of their respective owners; Simple Icons' own
+[disclaimer](https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md)
+asks users to seek the permissions their project needs. Using them to label a link to the
+service they belong to, in a private launcher, is ordinary identifying use.
+
+Two adjustments to what the pack ships:
+
+- **Apple TV** is defined as pure black, which is invisible on this background, so the
+  tile tints it silver instead.
+- **Prime Video is not in the pack** — there is no `primevideo` or `amazon` slug in
+  v16.30.0. Simple Icons runs a documented removal process for brands that ask, and
+  Amazon's absence from a pack this large is conspicuous, but I could not confirm that is
+  the reason. That tile currently uses a generic play glyph. Drop a real asset in via
+  `LOGO_DIR` below if you want one.
+
+### Using your own artwork instead
+
+Point `LOGO_DIR` at a folder, near the top of the `<script>` block:
 
 ```js
 var LOGO_DIR = "logos";
 ```
 
 ```
-logos/plex.svg
-logos/youtube.svg
-logos/appletv.svg
-logos/prime.svg
-logos/netflix.svg
+logos/plex.svg   logos/youtube.svg   logos/appletv.svg
+logos/prime.svg  logos/netflix.svg
 ```
 
 Each tile loads `<LOGO_DIR>/<service id>.svg` and swaps it in once it decodes; anything
-missing or broken falls back to the typographic mark, so a partial set is fine. Keep them
-local rather than hotlinking a CDN — a remote logo is a third-party request from your car
-on every page load. Most of these services publish an official brand-asset page; use
-their light-on-dark variants, since the tiles are dark.
+missing or broken falls back to the built-in glyph, so a partial set is fine — dropping in
+`prime.svg` alone works. Note that an `<img>` cannot be recoloured by CSS, so bake the
+colour into the file and use light-on-dark variants. Keep them local rather than
+hotlinking a CDN: a remote logo is a third-party request from your car on every load.
 
 ## Adding a region or a service
 
@@ -109,13 +123,14 @@ Both live in the `<script>` block at the bottom of `index.html`:
 The deck is a single row of five equal tiles on any screen wide enough to hold them —
 which is every car screen — and one equal column below 860px. Both layouts fill exactly,
 so no tile is left stranded on a row of its own. If you change the number of services,
-update `grid-template-columns: repeat(5, 1fr)` in `.deck` to match, and give the new
-channel a `data-voice` rule so it gets its own typographic treatment.
+update `grid-template-columns: repeat(5, 1fr)` in `.deck` to match, and give the new tile
+a `.glyph` SVG and a `--tint` colour.
 
 ## Design
 
-Equal-sized channel tiles in one rack, the way a TV platform lists its apps. Dark-only by
-intent — this runs on a car screen, often at night, where a light theme is a
+Equal-sized channel tiles in one rack, the way a TV platform lists its apps: a brand glyph
+over a uniform, quiet name label, so the logo does the identifying and the type does not
+compete with it. Dark-only by intent — this runs on a car screen, often at night, where a light theme is a
 headlight in the face. The interface chrome is warm monochrome and the only colour on the
 page comes from the five service tints, so the tiles read at a glance while driving up to
 a charger.

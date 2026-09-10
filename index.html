@@ -168,25 +168,30 @@ body{
   position:relative;
   flex:1;
   display:grid;place-items:center;
-  padding-block:6px 12px;
+  padding-block:10px 8px;
   min-height:0;
 }
 .logo{max-width:82%;max-height:74px;object-fit:contain;display:block}
+.glyph{
+  width:clamp(36px, 3.8vw, 54px);
+  height:auto;
+  fill:var(--tint);
+  display:block;
+}
+/* The glyph identifies the channel, so the name underneath stays uniform
+   and quiet - one voice across the rack rather than five.              */
 .channel{
-  color:var(--tint);
+  color:var(--house);
   text-align:center;
   text-wrap:balance;
-  line-height:1.02;
-  font-size:clamp(19px, 2.05vw, 30px);
+  line-height:1.15;
+  font-size:clamp(12px, 1.3vw, 16px);
+  font-weight:700;
+  letter-spacing:.11em;
+  text-indent:.11em;
   text-transform:uppercase;
+  padding-bottom:10px;
 }
-/* Each channel gets its own typographic voice rather than a copy of its
-   logo artwork - weight and tracking do the identifying work.          */
-.channel[data-voice="plex"]   {font-weight:800;letter-spacing:.26em;text-indent:.26em}
-.channel[data-voice="youtube"]{font-weight:800;letter-spacing:-.012em}
-.channel[data-voice="appletv"]{font-weight:400;letter-spacing:-.01em;text-transform:none;font-size:clamp(21px,2.25vw,33px)}
-.channel[data-voice="prime"]  {font-weight:700;letter-spacing:.02em}
-.channel[data-voice="netflix"]{font-weight:800;letter-spacing:.07em;text-indent:.07em}
 
 /* Stacked so the longest host - tv.apple.com/gb - still fits at any tile
    width, and every tile shares the same two-line footer baseline.      */
@@ -246,15 +251,15 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
 .note{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--dim);max-width:44ch}
 
 @media (max-width:1100px){
-  .channel{font-size:clamp(16px,1.95vw,24px)}
-  .channel[data-voice="plex"]{letter-spacing:.16em;text-indent:.16em}
+  .glyph{width:clamp(32px,3.4vw,44px)}
+  .channel{font-size:clamp(11px,1.25vw,14px);letter-spacing:.08em;text-indent:.08em}
 }
 @media (max-width:860px){
   .deck{grid-template-columns:1fr}
   .tile{min-height:112px}
   .art{padding-block:4px 10px}
-  .channel{font-size:26px}
-  .channel[data-voice="appletv"]{font-size:28px}
+  .glyph{width:42px}
+  .channel{font-size:15px}
   .colophon{grid-template-columns:1fr}
   .masthead{align-items:flex-start}
 }
@@ -292,33 +297,38 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
     </div>
 
     <nav class="deck" id="deck" aria-label="Channels">
-      <a class="tile" data-service="plex" style="--tint:#E5A00D"
+      <a class="tile" data-service="plex" style="--tint:#EBAF00"
          href="https://www.youtube.com/redirect?q=https%3A%2F%2Fapp.plex.tv%2Fdesktop%2F">
-        <span class="art"><span class="channel" data-voice="plex">Plex</span></span>
+        <span class="art"><svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3.987 8.409c-.96 0-1.587.28-2.12.933v-.72H0v8.88s.038.018.127.037c.138.03.821.187 1.331-.249.441-.377.542-.814.542-1.318v-1.283c.533.573 1.147.813 2 .813 1.84 0 3.253-1.493 3.253-3.48 0-2.12-1.36-3.613-3.266-3.613Zm16.748 5.595.406.591c.391.614.894.906 1.492.908.621-.012 1.064-.562 1.226-.755 0 0-.307-.27-.686-.72-.517-.614-1.214-1.755-1.24-1.803l-1.198 1.779Zm-3.205-1.955c0-2.08-1.52-3.64-3.52-3.64s-3.467 1.587-3.467 3.573a3.48 3.48 0 0 0 3.507 3.52c1.413 0 2.626-.84 3.253-2.293h-2.04l-.093.093c-.427.4-.72.533-1.227.533-.787 0-1.373-.506-1.453-1.266h4.986c.04-.214.054-.307.054-.52Zm-7.671-.219c0 .769.11 1.701.868 2.722l.056.069c-.306.526-.742.88-1.248.88-.399 0-.814-.211-1.138-.579a2.177 2.177 0 0 1-.538-1.441V6.409H9.86l-.001 5.421Zm9.283 3.46h-2.39l2.247-3.332-2.247-3.335h2.39l2.248 3.335-2.248 3.332Zm1.593-1.286Zm-17.162-.342c-.933 0-1.68-.773-1.68-1.72s.76-1.666 1.68-1.666c.92 0 1.68.733 1.68 1.68 0 .946-.733 1.706-1.68 1.706Zm18.361-1.974L24 8.622h-2.391l-.87 1.293 1.195 1.773Zm-9.404-.466c.16-.706.72-1.133 1.493-1.133.773 0 1.373.467 1.507 1.133h-3Z"/></svg></span>
+        <span class="channel">Plex</span>
         <span class="route"><span class="route-kind">via youtube</span><span class="route-host">app.plex.tv</span></span>
       </a>
 
-      <a class="tile" data-service="youtube" style="--tint:#FF4133"
+      <a class="tile" data-service="youtube" style="--tint:#FF0000"
          href="https://www.youtube.com/?persist_gl=1&amp;gl=GB">
-        <span class="art"><span class="channel" data-voice="youtube">YouTube</span></span>
+        <span class="art"><svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></span>
+        <span class="channel">YouTube</span>
         <span class="route"><span class="route-kind">direct</span><span class="route-host">youtube.com</span></span>
       </a>
 
       <a class="tile" data-service="appletv" style="--tint:#E4E4EA"
          href="https://www.youtube.com/redirect?q=https%3A%2F%2Ftv.apple.com%2Fgb">
-        <span class="art"><span class="channel" data-voice="appletv">Apple TV</span></span>
+        <span class="art"><svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M20.57 17.735h-1.815l-3.34-9.203h1.633l2.02 5.987c.075.231.273.9.586 2.012l.297-.997.33-1.006 2.094-6.004H24zm-5.344-.066a5.76 5.76 0 0 1-1.55.207c-1.23 0-1.84-.693-1.84-2.087V9.646h-1.063V8.532h1.121V7.081l1.476-.602v2.062h1.707v1.113H13.38v5.805c0 .446.074.75.214.932.14.182.396.264.75.264.207 0 .495-.041.883-.115zm-7.29-5.343c.017 1.764 1.55 2.358 1.567 2.366-.017.042-.248.842-.808 1.658-.487.71-.99 1.418-1.79 1.435-.783.016-1.03-.462-1.93-.462-.89 0-1.17.445-1.913.478-.758.025-1.344-.775-1.838-1.484-.998-1.451-1.765-4.098-.734-5.88.51-.89 1.426-1.451 2.416-1.46.75-.016 1.468.512 1.93.512.461 0 1.327-.627 2.234-.536.38.016 1.452.157 2.136 1.154-.058.033-1.278.743-1.27 2.219M6.468 7.988c.404-.495.685-1.18.61-1.864-.585.025-1.294.388-1.723.883-.38.437-.71 1.138-.619 1.806.652.05 1.328-.338 1.732-.825Z"/></svg></span>
+        <span class="channel">Apple TV</span>
         <span class="route"><span class="route-kind">via youtube</span><span class="route-host">tv.apple.com/gb</span></span>
       </a>
 
       <a class="tile" data-service="prime" style="--tint:#00A8E1"
          href="https://www.youtube.com/redirect?q=https%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fvideo%2Fstorefront">
-        <span class="art"><span class="channel" data-voice="prime">Prime Video</span></span>
+        <span class="art"><svg class="glyph" data-generic="true" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="channel">Prime Video</span>
         <span class="route"><span class="route-kind">via youtube</span><span class="route-host">amazon.co.uk</span></span>
       </a>
 
       <a class="tile" data-service="netflix" style="--tint:#E50914"
          href="https://www.youtube.com/redirect?q=https%3A%2F%2Fwww.netflix.com%2Fbrowse">
-        <span class="art"><span class="channel" data-voice="netflix">Netflix</span></span>
+        <span class="art"><svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="m5.398 0 8.348 23.602c2.346.059 4.856.398 4.856.398L10.113 0H5.398zm8.489 0v9.172l4.715 13.33V0h-4.715zM5.398 1.5V24c1.873-.225 2.81-.312 4.715-.398V14.83L5.398 1.5z"/></svg></span>
+        <span class="channel">Netflix</span>
         <span class="route"><span class="route-kind">via youtube</span><span class="route-host">netflix.com</span></span>
       </a>
     </nav>
@@ -426,7 +436,7 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
         var id = tile.getAttribute("data-service");
         var svc = SERVICES[id];
         if (!svc) return;
-        var mark = tile.querySelector(".channel");
+        var mark = tile.querySelector(".glyph");
         var img = document.createElement("img");
         img.className = "logo";
         img.alt = svc.name;
