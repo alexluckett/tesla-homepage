@@ -60,6 +60,30 @@ particular market); otherwise the stored choice is restored. `?fs=0` disables th
 full-screen redirect and has no on-screen control by design — it is an escape hatch for
 firmware that has closed the trick, not an everyday setting.
 
+### Running the launcher itself full screen
+
+The redirect works on any URL, including this one. Point it at your own deployment and
+bookmark that, rather than bookmarking the page directly:
+
+```
+https://www.youtube.com/redirect?q=<url-encoded launcher URL>
+```
+
+Tap **Go to site** once and Front Row loads inside the full-screen view. Worth pairing
+with `fs=0` so channels then open by direct link instead of bouncing through YouTube a
+second time — one interstitial when you open the launcher rather than one per channel:
+
+```
+https://www.youtube.com/redirect?q=https%3A%2F%2Ffrontrow.example.com%2F%3Fc%3Duk%26fs%3D0
+```
+
+That pairing assumes the full-screen view survives a same-window navigation, which has not
+been confirmed on a car. If a channel drops back to a windowed browser, drop `&fs=0`.
+
+The browser's Fullscreen API is not a substitute: it fills the browser's viewport, and the
+Tesla browser is itself a window in the car's UI, so it cannot escape that container the
+way handing the navigation to the YouTube app does.
+
 ## Channels
 
 46 channels across 10 markets. A channel is only listed where it is in that market's list
