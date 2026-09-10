@@ -16,8 +16,8 @@
   --rail:#3A332C;     /* hairlines */
   --house:#F5EFE6;    /* primary ink */
   --dim:#8D8478;      /* quiet ink */
-  --shell:1200px;    /* one measure shared by the bar and the grid */
-  --pad:clamp(14px, 2.4vw, 32px);
+  --shell:1400px;    /* one measure shared by the bar and the grid */
+  --pad:clamp(12px, 1.6vw, 24px);
   --gap:clamp(18px, 2.4vw, 32px);
   --sans:-apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
 }
@@ -109,9 +109,10 @@ body{
 
 /* ---- The channels ------------------------------------------------------ */
 .deck{
-  flex:1;
+  flex:0 1 auto;
+  margin-block:auto;
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns:repeat(4, 1fr);
   /* Cards this size overflow a car screen, so the grid starts at the top and
      scrolls rather than centring and clipping its first row. */
   align-content:start;
@@ -120,7 +121,6 @@ body{
   max-width:var(--shell);
   margin-inline:auto;
   padding:0 var(--pad) clamp(16px,3vh,36px);
-  padding-block-start:clamp(4px,1vh,12px);
 }
 .tile{
   --tint:var(--house);
@@ -128,7 +128,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   flex-wrap:wrap;gap:10px;
   padding:14px;
-  aspect-ratio:3/2;
+  aspect-ratio:7/5;
   border:1px solid var(--rail);
   border-radius:18px;
   background:var(--stage);
@@ -189,7 +189,7 @@ body{
 }
 /* Where it will land. */
 .slot{
-  aspect-ratio:3/2;
+  aspect-ratio:7/5;
   border:2px dashed var(--rail);
   border-radius:18px;
   background:rgba(245,239,230,.03);
@@ -223,8 +223,11 @@ body{
 @media (min-width:641px) and (max-height:520px){
   .tile,.slot{aspect-ratio:2/1}
 }
+@media (max-width:1000px){
+  .deck{grid-template-columns:repeat(3, 1fr)}
+}
 @media (max-width:640px){
-  .deck{grid-template-columns:repeat(auto-fill, minmax(210px, 1fr));align-content:start}
+  .deck{grid-template-columns:repeat(2, 1fr)}
   .brand{display:none}
 }
 @media (prefers-reduced-motion:reduce){

@@ -310,8 +310,11 @@ Both tables are generated into the `<script id="data">` blob by
 - A market is `{"c": "uk", "f": "🇬🇧", "n": "United Kingdom", "ch": [channel ids]}`. The
   dropdown is built from this list, so a new market appears automatically.
 
-The grid is `repeat(auto-fill, minmax(240px, 1fr))`, so it absorbs any number of channels
-without further changes. The control bar and the grid share one measure, `--shell`
+The grid is a fixed `repeat(4, 1fr)` — four columns at any window a car screen is likely to
+be, dropping to three below 1000px and two below 640px — so it absorbs any number of
+channels without further changes. It centres vertically using auto margins rather than
+`align-content`, which would push the first row out of reach once a market outgrows the
+screen. The control bar and the grid share one measure, `--shell`
 (1080px), and both centre on wider screens — change it in one place to widen or narrow the
 whole layout.
 
