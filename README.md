@@ -119,30 +119,52 @@ pack covering these brands' logotypes was available — in particular the nation
 broadcasters, which developer-oriented logo collections do not carry. `LOGO_DIR` below is
 the way to use real logotype artwork.
 
-Marks come from two **CC0-1.0** sets, inlined as SVG paths so they cost no extra requests:
-**[Simple Icons](https://github.com/simple-icons/simple-icons)** v16.30.0 for most of them,
-and **[CoreUI Brands](https://github.com/coreui/coreui-icons)** for Hulu. The two use
-different grids, so each mark carries its own `vb` (viewBox) where it is not the 24x24
-default. The logos themselves remain the trademarks of their respective owners; Simple
+Marks are inlined as SVG paths so they cost no extra requests, and come from four sets:
+
+| Set | Licence | Used for |
+| --- | --- | --- |
+| [Simple Icons](https://github.com/simple-icons/simple-icons) v16.30.0 | CC0-1.0 | most marks |
+| [CoreUI Brands](https://github.com/coreui/coreui-icons) | CC0-1.0 | Hulu |
+| [selfh.st/icons](https://github.com/selfhst/icons) | **CC BY 4.0** | Disney+, Prime Video |
+| [Streamline Logos](https://www.streamlinehq.com/) | **CC BY 4.0** | BBC iPlayer |
+
+The last two require attribution — that is what this table is for; keep it if you fork.
+
+The sets draw on different grids and some marks sit in a corner of theirs, so each mark
+carries its own `vb` (a viewBox tightened to the artwork's bounding box) where it is not
+the 24x24 default. That is what keeps a 512x512 logotype and a 24x24 glyph the same
+optical size on their tiles.
+
+### A note on Simple Icons mirrors
+
+Simple Icons no longer ships `primevideo`, `bbciplayer` or `amazon` — they are absent from
+v16.30.0 on npm. Iconify's bundled copy is *labelled* v16.30.0 but still contains all
+three, so it is a stale mirror from before those removals. Simple Icons runs a documented
+removal process for brands that ask, so those marks are deliberately not taken from the
+mirror; the Disney+, Prime Video and iPlayer artwork above comes from projects that drew
+their own instead. The logos themselves remain the trademarks of their respective owners; Simple
 Icons' [disclaimer](https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md)
 asks users to seek the permissions their project needs. Using them to label a link to the
 service they belong to, in a private launcher, is ordinary identifying use.
 
-**With a mark:** Plex, YouTube, Netflix, Apple TV, ITVX, Channel 4, NOW, Paramount+,
-Crunchyroll, Max, Tubi, Hulu, CBC Gem, ZDF, RTL+, Virgin Media Player.
+**With a mark:** Plex, YouTube, Netflix, Prime Video, Apple TV, Disney+, BBC iPlayer, ITVX,
+Channel 4, NOW, Paramount+, Crunchyroll, Max, Tubi, Hulu, CBC Gem, ZDF, RTL+, Virgin Media
+Player.
 
-**Name only** (in none of the sets searched): Prime Video, Disney+, BBC iPlayer, Channel 5,
-Peacock, Pluto TV, Crave, RTÉ Player, and the Australian, French, Spanish, Italian, Dutch
-and German public broadcasters. Simple Icons, CoreUI Brands and the gilbarbara `logos` set
-were all checked — roughly 3,000 icons — and broadcaster logotypes are simply not what
-developer icon sets carry. `LOGO_DIR` below is the way to supply them.
+**Name only:** Channel 5, Peacock, Pluto TV, Crave, RTÉ Player, and the Australian, French,
+Spanish, Italian, Dutch and German public broadcasters. Channel 5 does exist in
+[custom-brand-icons](https://github.com/elax46/custom-brand-icons), but under
+CC BY-NC-SA 4.0 — non-commercial with a ShareAlike obligation — so it is left out rather
+than quietly attaching copyleft terms to this repository. `LOGO_DIR` below is the way to
+supply any of these.
 
 Brand colours are used exactly as the pack ships them, except where a mark would be
 invisible on the dark background. Anything below 35% lightness is lifted in HSL so the hue
 survives — blending toward white turns saturated reds into pink. That affects three:
 **Apple TV** and **Max** (both defined as black or dark grey, lifted to silver) and **NOW**
 (a near-black teal, lifted to cyan). Hulu carries no colour in CoreUI Brands, so its tile
-uses the brand's green.
+uses the brand's green. Disney+, Prime Video and BBC iPlayer are white logotypes: their
+baked-in fill is stripped so they take the tile tint like every other mark.
 
 ### Using your own artwork instead
 
