@@ -469,19 +469,26 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
     fsToggle.setAttribute("aria-pressed", String(fullscreen));
 
     // Bookmarkable full-screen entry point for the launcher itself.
-    var self = new URL(window.location.href);
-    self.hash = "";
-    self.searchParams.set("c", country.code);
-    if (fullscreen) { self.searchParams.delete("fs"); } else { self.searchParams.set("fs", "0"); }
-    selfLaunch.href = YT_REDIRECT + encodeURIComponent(self.toString());
-    selfLaunch.hidden = false;
+    try {
+      var self = new URL(window.location.href);
+      self.hash = "";
+      self.searchParams.set("c", country.code);
+      if (fullscreen) { self.searchParams.delete("fs"); } else { self.searchParams.set("fs", "0"); }
+      selfLaunch.href = YT_REDIRECT + encodeURIComponent(self.toString());
+      selfLaunch.hidden = false;
+    } catch (e) { selfLaunch.hidden = true; }
   }
 
   function syncUrl() {
-    var next = new URL(window.location.href);
-    next.searchParams.set("c", country.code);
-    if (fullscreen) { next.searchParams.delete("fs"); } else { next.searchParams.set("fs", "0"); }
-    window.history.replaceState(null, "", next.toString());
+    // Sandboxed frames and some file:// contexts refuse replaceState. The
+    // choice still applies to the links either way, so failing here is not
+    // worth breaking the page over.
+    try {
+      var next = new URL(window.location.href);
+      next.searchParams.set("c", country.code);
+      if (fullscreen) { next.searchParams.delete("fs"); } else { next.searchParams.set("fs", "0"); }
+      window.history.replaceState(null, "", next.toString());
+    } catch (e) { /* keep the rendered links, drop the URL sync */ }
   }
 
   // Build the region picker from the table so the two never drift apart.
