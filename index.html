@@ -6,143 +6,96 @@
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#100E0C">
-<meta name="description" content="A full-screen streaming launcher for the Tesla browser. Equal-sized channel tiles, region-aware links, no cookies.">
 <title>Front Row</title>
 <style>
-/* ---- Tokens -------------------------------------------------------------
-   Single-theme by intent: this runs on a car screen, often at night.
-   A light mode would be a headlight in the face, so the page commits to
-   the dark auditorium and paints every colour explicitly.                */
 :root{
-  --pit:#100E0C;        /* auditorium black, warmed */
-  --stage:#1A1714;      /* tile surface */
-  --riser:#241F1B;      /* pressed / raised */
-  --rail:#3A332C;       /* hairlines */
-  --house:#F5EFE6;      /* house lights - primary ink */
-  --dim:#9C9186;        /* secondary ink */
-  --pad:clamp(16px, 3vw, 40px);
-  --gap:clamp(10px, 1.2vw, 16px);
+  color-scheme:dark;
+  --pit:#100E0C;      /* auditorium black, warmed */
+  --stage:#1A1714;    /* tile surface */
+  --riser:#241F1B;    /* raised */
+  --rail:#3A332C;     /* hairlines */
+  --house:#F5EFE6;    /* primary ink */
+  --dim:#8D8478;      /* quiet ink */
+  --pad:clamp(14px, 2.4vw, 32px);
+  --gap:clamp(10px, 1.3vw, 18px);
   --sans:-apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
-  --mono:ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
   background:var(--pit);
   color:var(--house);
   font-family:var(--sans);
   font-size:16px;
   line-height:1.4;
   -webkit-tap-highlight-color:transparent;
-  text-rendering:optimizeLegibility;
-}
-.shell{
-  max-width:1440px;
-  margin:0 auto;
-  padding-inline:var(--pad);
-  padding-block:clamp(18px, 2.6vh, 34px) clamp(24px, 4vh, 48px);
-  display:flex;
-  flex-direction:column;
-  gap:clamp(16px, 2.4vh, 28px);
 }
 
-/* ---- Masthead ---------------------------------------------------------- */
-.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
-.mark{display:flex;flex-direction:column;gap:6px}
-.eyebrow{
-  margin:0;
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
+/* ---- Chrome: a quiet name, and the one control ------------------------- */
+.bar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:clamp(12px,1.8vh,20px) var(--pad);
+}
+.brand{
+  font-size:12px;font-weight:700;
+  letter-spacing:.24em;text-indent:.24em;text-transform:uppercase;
   color:var(--dim);
-  font-weight:400;
+  user-select:none;
 }
-.eyebrow b{color:var(--house);font-weight:600}
-.wordmark{
-  margin:0;
-  font-size:clamp(26px, 3.6vw, 40px);
-  font-weight:800;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  line-height:1;
-  text-wrap:balance;
-}
-
-/* ---- Controls ---------------------------------------------------------- */
-.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.picker{
-  display:flex;flex-wrap:wrap;gap:6px;
-  margin:0;padding:6px;
-  border:1px solid var(--rail);
-  border-radius:14px;
-  background:var(--stage);
-}
-.picker legend{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.pill{
-  appearance:none;
-  min-width:66px;min-height:52px;
-  padding:0 14px;
-  border:0;border-radius:9px;
+.region{position:relative;display:flex}
+.region select{
+  appearance:none;-webkit-appearance:none;
+  min-height:48px;
+  padding:0 40px 0 16px;
+  border:1px solid var(--rail);border-radius:11px;
   background:transparent;
   color:var(--dim);
-  font-family:var(--mono);
-  font-size:16px;font-weight:600;letter-spacing:.08em;
+  font-family:inherit;font-size:14px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
   cursor:pointer;
   touch-action:manipulation;
-  transition:background .12s ease, color .12s ease;
+  transition:color .12s ease, border-color .12s ease, background .12s ease;
 }
-.pill:hover{color:var(--house);background:var(--riser)}
-.pill[aria-pressed="true"]{background:var(--house);color:var(--pit)}
-.pill:focus-visible{outline:3px solid var(--house);outline-offset:2px}
-.toggle{
-  display:flex;align-items:center;gap:10px;
-  min-height:64px;
-  padding:0 18px;
-  border:1px solid var(--rail);border-radius:14px;
-  background:var(--stage);
-  color:var(--house);
-  font:inherit;font-weight:600;
-  cursor:pointer;
-  touch-action:manipulation;
+.region select:hover{color:var(--house);background:var(--riser)}
+.region select:focus-visible{outline:3px solid var(--house);outline-offset:2px}
+.region option{background:var(--stage);color:var(--house);text-transform:none;letter-spacing:normal}
+/* Chevron drawn as a data URI so the page still makes no network requests. */
+.region::after{
+  content:"";
+  position:absolute;right:15px;top:50%;
+  width:11px;height:7px;
+  transform:translateY(-50%);
+  background:currentColor;
+  color:var(--dim);
+  clip-path:polygon(0 0, 100% 0, 50% 100%);
+  pointer-events:none;
 }
-.toggle:hover{background:var(--riser)}
-.toggle:focus-visible{outline:3px solid var(--house);outline-offset:2px}
-.toggle-label{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-.lamp{
-  width:12px;height:12px;border-radius:50%;
-  background:var(--rail);
-  transition:background .12s ease, box-shadow .12s ease;
-}
-.toggle[aria-pressed="true"] .lamp{background:#7BD88F;box-shadow:0 0 10px rgba(123,216,143,.55)}
-.toggle[aria-pressed="true"] .toggle-label{color:var(--house)}
 
-/* ---- Channel rack ------------------------------------------------------
-   One row of five equal tiles on any screen wide enough to hold them,
-   which is every car screen; a single equal column below that. Both
-   layouts fill exactly, so no tile is ever left stranded in a row.     */
-.rack{display:flex;flex-direction:column;gap:10px}
-.rack-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.rack-head h2{
-  margin:0;
-  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--dim);font-weight:600;
-}
-.count{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);font-variant-numeric:tabular-nums}
+/* ---- The channels ------------------------------------------------------ */
 .deck{
+  flex:1;
   display:grid;
-  grid-template-columns:repeat(5,1fr);
+  grid-template-columns:repeat(5, 1fr);
+  align-content:center;
   gap:var(--gap);
+  width:100%;
+  max-width:1320px;
+  margin-inline:auto;
+  padding:0 var(--pad) clamp(16px,3vh,36px);
 }
 .tile{
   --tint:var(--house);
   position:relative;
-  display:flex;flex-direction:column;
-  min-height:clamp(150px, 24vh, 230px);
-  padding:clamp(14px, 1.4vw, 20px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(10px,1.6vh,20px);
+  aspect-ratio:4/5;
   border:1px solid var(--rail);
-  border-radius:18px;
+  border-radius:20px;
   background:var(--stage);
   color:var(--house);
   text-decoration:none;
@@ -152,116 +105,42 @@ body{
 }
 .tile::after{
   content:"";
-  position:absolute;inset:-40% -30% auto -30%;
-  height:160%;
-  background:radial-gradient(52% 52% at 50% 38%, var(--tint) 0%, transparent 72%);
-  opacity:.13;
+  position:absolute;inset:-40% -30% auto -30%;height:160%;
+  background:radial-gradient(52% 52% at 50% 40%, var(--tint) 0%, transparent 72%);
+  opacity:.12;
   pointer-events:none;
 }
 .tile:hover{background:var(--riser);border-color:var(--tint)}
 .tile:active{transform:scale(.985)}
 .tile:focus-visible{outline:3px solid var(--house);outline-offset:3px}
-
-/* Logo slot: an <img> when a local file is configured, otherwise the
-   typographic channel mark below it. Never a third-party request.      */
-.art{
-  position:relative;
-  flex:1;
-  display:grid;place-items:center;
-  padding-block:10px 8px;
-  min-height:0;
-}
-.logo{max-width:82%;max-height:74px;object-fit:contain;display:block}
 .glyph{
-  width:clamp(36px, 3.8vw, 54px);
+  width:clamp(44px, 5.8vw, 86px);
   height:auto;
   fill:var(--tint);
   display:block;
 }
-/* The glyph identifies the channel, so the name underneath stays uniform
-   and quiet - one voice across the rack rather than five.              */
-.channel{
-  color:var(--house);
+.logo{max-width:64%;max-height:clamp(44px,5.8vw,86px);object-fit:contain;display:block}
+.name{
+  font-size:clamp(12px, 1.25vw, 16px);
+  font-weight:700;
+  letter-spacing:.12em;text-indent:.12em;
+  text-transform:uppercase;
   text-align:center;
   text-wrap:balance;
-  line-height:1.15;
-  font-size:clamp(12px, 1.3vw, 16px);
-  font-weight:700;
-  letter-spacing:.11em;
-  text-indent:.11em;
-  text-transform:uppercase;
-  padding-bottom:10px;
+  line-height:1.2;
 }
 
-/* Stacked so the longest host - tv.apple.com/gb - still fits at any tile
-   width, and every tile shares the same two-line footer baseline.      */
-.route{
-  display:flex;flex-direction:column;flex-wrap:nowrap;align-items:center;gap:5px;
-  font-family:var(--mono);
-  font-size:10.5px;
-  letter-spacing:.04em;
-  color:var(--dim);
-  font-variant-numeric:tabular-nums;
-  min-width:0;
+/* Squares would overflow a short landscape window, so flatten them there. */
+@media (min-width:881px) and (max-height:560px){
+  .tile{aspect-ratio:1}
 }
-.route-kind{
-  text-transform:uppercase;
-  letter-spacing:.13em;
-  font-size:9px;
-  padding:3px 6px;
-  border-radius:5px;
-  background:var(--riser);
-  color:var(--dim);
-}
-.route-host{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;color:var(--dim)}
-
-/* ---- Colophon ---------------------------------------------------------- */
-.colophon{
-  display:grid;
-  grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);
-  gap:var(--gap) clamp(24px,4vw,56px);
-  padding-top:clamp(14px,2.2vh,24px);
-  border-top:1px solid var(--rail);
-}
-.colophon h2{
-  margin:0 0 10px;
-  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--dim);font-weight:600;
-}
-.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-width:62ch}
-.steps li{
-  display:grid;grid-template-columns:22px 1fr;gap:10px;
-  font-size:14px;color:var(--dim);
-}
-.steps .n{font-family:var(--mono);font-size:12px;color:var(--house);padding-top:2px}
-.steps b{color:var(--house);font-weight:600}
-code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break-all}
-.launch{
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  min-height:72px;padding:0 20px;
-  border:1px solid var(--rail);border-radius:14px;
-  background:var(--stage);color:var(--house);
-  text-decoration:none;font-weight:700;
-  letter-spacing:.05em;text-transform:uppercase;font-size:15px;
-  touch-action:manipulation;
-}
-.launch:hover{background:var(--riser)}
-.launch:focus-visible{outline:3px solid var(--house);outline-offset:3px}
-.launch .arrow{font-family:var(--mono);color:var(--dim)}
-.note{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--dim);max-width:44ch}
-
-@media (max-width:1100px){
-  .glyph{width:clamp(32px,3.4vw,44px)}
-  .channel{font-size:clamp(11px,1.25vw,14px);letter-spacing:.08em;text-indent:.08em}
-}
-@media (max-width:860px){
-  .deck{grid-template-columns:1fr}
-  .tile{min-height:112px}
-  .art{padding-block:4px 10px}
-  .glyph{width:42px}
-  .channel{font-size:15px}
-  .colophon{grid-template-columns:1fr}
-  .masthead{align-items:flex-start}
+/* Narrow: equal full-width rows rather than a stranded last tile. */
+@media (max-width:880px){
+  .deck{grid-template-columns:1fr;align-content:start;gap:10px}
+  .tile{aspect-ratio:5/2;flex-direction:row;gap:18px;border-radius:16px}
+  .glyph{width:clamp(34px,9vw,52px)}
+  .logo{max-height:clamp(34px,9vw,52px)}
+  .name{font-size:16px}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition:none !important}
@@ -269,92 +148,40 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
 </style>
 </head>
 <body>
-<div class="shell">
 
-  <header class="masthead">
-    <div class="mark">
-      <p class="eyebrow">In-car launcher · <b>Park only</b></p>
-      <h1 class="wordmark">Front Row</h1>
-    </div>
-
-    <div class="controls">
-      <fieldset class="picker" id="picker">
-        <legend>Region</legend>
-        <button type="button" class="pill" value="uk" aria-pressed="true">UK</button>
-      </fieldset>
-
-      <button type="button" class="toggle" id="fsToggle" aria-pressed="true">
-        <span class="lamp" aria-hidden="true"></span>
-        <span class="toggle-label">Full screen</span>
-      </button>
-    </div>
-  </header>
-
-  <section class="rack">
-    <div class="rack-head">
-      <h2>Channels</h2>
-      <span class="count" id="count">5</span>
-    </div>
-
-    <nav class="deck" id="deck" aria-label="Channels">
-      <a class="tile" data-service="plex" style="--tint:#EBAF00"
-         href="https://www.youtube.com/redirect?q=https%3A%2F%2Fapp.plex.tv%2Fdesktop%2F">
-        <span class="art"><svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3.987 8.409c-.96 0-1.587.28-2.12.933v-.72H0v8.88s.038.018.127.037c.138.03.821.187 1.331-.249.441-.377.542-.814.542-1.318v-1.283c.533.573 1.147.813 2 .813 1.84 0 3.253-1.493 3.253-3.48 0-2.12-1.36-3.613-3.266-3.613Zm16.748 5.595.406.591c.391.614.894.906 1.492.908.621-.012 1.064-.562 1.226-.755 0 0-.307-.27-.686-.72-.517-.614-1.214-1.755-1.24-1.803l-1.198 1.779Zm-3.205-1.955c0-2.08-1.52-3.64-3.52-3.64s-3.467 1.587-3.467 3.573a3.48 3.48 0 0 0 3.507 3.52c1.413 0 2.626-.84 3.253-2.293h-2.04l-.093.093c-.427.4-.72.533-1.227.533-.787 0-1.373-.506-1.453-1.266h4.986c.04-.214.054-.307.054-.52Zm-7.671-.219c0 .769.11 1.701.868 2.722l.056.069c-.306.526-.742.88-1.248.88-.399 0-.814-.211-1.138-.579a2.177 2.177 0 0 1-.538-1.441V6.409H9.86l-.001 5.421Zm9.283 3.46h-2.39l2.247-3.332-2.247-3.335h2.39l2.248 3.335-2.248 3.332Zm1.593-1.286Zm-17.162-.342c-.933 0-1.68-.773-1.68-1.72s.76-1.666 1.68-1.666c.92 0 1.68.733 1.68 1.68 0 .946-.733 1.706-1.68 1.706Zm18.361-1.974L24 8.622h-2.391l-.87 1.293 1.195 1.773Zm-9.404-.466c.16-.706.72-1.133 1.493-1.133.773 0 1.373.467 1.507 1.133h-3Z"/></svg></span>
-        <span class="channel">Plex</span>
-        <span class="route"><span class="route-kind">via youtube</span><span class="route-host">app.plex.tv</span></span>
-      </a>
-
-      <a class="tile" data-service="youtube" style="--tint:#FF0000"
-         href="https://www.youtube.com/?persist_gl=1&amp;gl=GB">
-        <span class="art"><svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></span>
-        <span class="channel">YouTube</span>
-        <span class="route"><span class="route-kind">direct</span><span class="route-host">youtube.com</span></span>
-      </a>
-
-      <a class="tile" data-service="appletv" style="--tint:#E4E4EA"
-         href="https://www.youtube.com/redirect?q=https%3A%2F%2Ftv.apple.com%2Fgb">
-        <span class="art"><svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M20.57 17.735h-1.815l-3.34-9.203h1.633l2.02 5.987c.075.231.273.9.586 2.012l.297-.997.33-1.006 2.094-6.004H24zm-5.344-.066a5.76 5.76 0 0 1-1.55.207c-1.23 0-1.84-.693-1.84-2.087V9.646h-1.063V8.532h1.121V7.081l1.476-.602v2.062h1.707v1.113H13.38v5.805c0 .446.074.75.214.932.14.182.396.264.75.264.207 0 .495-.041.883-.115zm-7.29-5.343c.017 1.764 1.55 2.358 1.567 2.366-.017.042-.248.842-.808 1.658-.487.71-.99 1.418-1.79 1.435-.783.016-1.03-.462-1.93-.462-.89 0-1.17.445-1.913.478-.758.025-1.344-.775-1.838-1.484-.998-1.451-1.765-4.098-.734-5.88.51-.89 1.426-1.451 2.416-1.46.75-.016 1.468.512 1.93.512.461 0 1.327-.627 2.234-.536.38.016 1.452.157 2.136 1.154-.058.033-1.278.743-1.27 2.219M6.468 7.988c.404-.495.685-1.18.61-1.864-.585.025-1.294.388-1.723.883-.38.437-.71 1.138-.619 1.806.652.05 1.328-.338 1.732-.825Z"/></svg></span>
-        <span class="channel">Apple TV</span>
-        <span class="route"><span class="route-kind">via youtube</span><span class="route-host">tv.apple.com/gb</span></span>
-      </a>
-
-      <a class="tile" data-service="prime" style="--tint:#00A8E1"
-         href="https://www.youtube.com/redirect?q=https%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fvideo%2Fstorefront">
-        <span class="art"><svg class="glyph" data-generic="true" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z"/></svg></span>
-        <span class="channel">Prime Video</span>
-        <span class="route"><span class="route-kind">via youtube</span><span class="route-host">amazon.co.uk</span></span>
-      </a>
-
-      <a class="tile" data-service="netflix" style="--tint:#E50914"
-         href="https://www.youtube.com/redirect?q=https%3A%2F%2Fwww.netflix.com%2Fbrowse">
-        <span class="art"><svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="m5.398 0 8.348 23.602c2.346.059 4.856.398 4.856.398L10.113 0H5.398zm8.489 0v9.172l4.715 13.33V0h-4.715zM5.398 1.5V24c1.873-.225 2.81-.312 4.715-.398V14.83L5.398 1.5z"/></svg></span>
-        <span class="channel">Netflix</span>
-        <span class="route"><span class="route-kind">via youtube</span><span class="route-host">netflix.com</span></span>
-      </a>
-    </nav>
-  </section>
-
-  <footer class="colophon">
-    <div>
-      <h2>How the full screen works</h2>
-      <ol class="steps">
-        <li><span class="n">01</span><span>Open the <b>YouTube</b> app once, then close it, so it is warm in memory.</span></li>
-        <li><span class="n">02</span><span>Every channel here points at <code>youtube.com/redirect?q=…</code>, which hands the tap to the YouTube app — and that app draws over the whole screen.</span></li>
-        <li><span class="n">03</span><span>YouTube shows a <b>leaving YouTube</b> interstitial. Tap <b>Go to site</b> and the channel loads inside that full-screen view.</span></li>
-        <li><span class="n">04</span><span>Video only plays in <b>Park</b>. YouTube is linked directly — it is already the full-screen app.</span></li>
-      </ol>
-    </div>
-    <div>
-      <h2>Bookmark this</h2>
-      <a class="launch" id="selfLaunch" href="#" hidden>
-        <span>Open Front Row full screen</span>
-        <span class="arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <p class="note">Save that link as a favourite so the launcher itself opens full screen, with your region already chosen. No cookies, no storage, no analytics — the region lives in the URL.</p>
-    </div>
-  </footer>
-
+<div class="bar">
+  <span class="brand">Front Row</span>
+  <span class="region">
+    <select id="region" aria-label="Region"></select>
+  </span>
 </div>
+
+<nav class="deck" id="deck" aria-label="Channels">
+    <a class="tile" data-service="plex" style="--tint:#EBAF00" href="#">
+      <svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3.987 8.409c-.96 0-1.587.28-2.12.933v-.72H0v8.88s.038.018.127.037c.138.03.821.187 1.331-.249.441-.377.542-.814.542-1.318v-1.283c.533.573 1.147.813 2 .813 1.84 0 3.253-1.493 3.253-3.48 0-2.12-1.36-3.613-3.266-3.613Zm16.748 5.595.406.591c.391.614.894.906 1.492.908.621-.012 1.064-.562 1.226-.755 0 0-.307-.27-.686-.72-.517-.614-1.214-1.755-1.24-1.803l-1.198 1.779Zm-3.205-1.955c0-2.08-1.52-3.64-3.52-3.64s-3.467 1.587-3.467 3.573a3.48 3.48 0 0 0 3.507 3.52c1.413 0 2.626-.84 3.253-2.293h-2.04l-.093.093c-.427.4-.72.533-1.227.533-.787 0-1.373-.506-1.453-1.266h4.986c.04-.214.054-.307.054-.52Zm-7.671-.219c0 .769.11 1.701.868 2.722l.056.069c-.306.526-.742.88-1.248.88-.399 0-.814-.211-1.138-.579a2.177 2.177 0 0 1-.538-1.441V6.409H9.86l-.001 5.421Zm9.283 3.46h-2.39l2.247-3.332-2.247-3.335h2.39l2.248 3.335-2.248 3.332Zm1.593-1.286Zm-17.162-.342c-.933 0-1.68-.773-1.68-1.72s.76-1.666 1.68-1.666c.92 0 1.68.733 1.68 1.68 0 .946-.733 1.706-1.68 1.706Zm18.361-1.974L24 8.622h-2.391l-.87 1.293 1.195 1.773Zm-9.404-.466c.16-.706.72-1.133 1.493-1.133.773 0 1.373.467 1.507 1.133h-3Z"/></svg>
+      <span class="name">Plex</span>
+    </a>
+
+    <a class="tile" data-service="youtube" style="--tint:#FF0000" href="#">
+      <svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      <span class="name">YouTube</span>
+    </a>
+
+    <a class="tile" data-service="appletv" style="--tint:#E4E4EA" href="#">
+      <svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M20.57 17.735h-1.815l-3.34-9.203h1.633l2.02 5.987c.075.231.273.9.586 2.012l.297-.997.33-1.006 2.094-6.004H24zm-5.344-.066a5.76 5.76 0 0 1-1.55.207c-1.23 0-1.84-.693-1.84-2.087V9.646h-1.063V8.532h1.121V7.081l1.476-.602v2.062h1.707v1.113H13.38v5.805c0 .446.074.75.214.932.14.182.396.264.75.264.207 0 .495-.041.883-.115zm-7.29-5.343c.017 1.764 1.55 2.358 1.567 2.366-.017.042-.248.842-.808 1.658-.487.71-.99 1.418-1.79 1.435-.783.016-1.03-.462-1.93-.462-.89 0-1.17.445-1.913.478-.758.025-1.344-.775-1.838-1.484-.998-1.451-1.765-4.098-.734-5.88.51-.89 1.426-1.451 2.416-1.46.75-.016 1.468.512 1.93.512.461 0 1.327-.627 2.234-.536.38.016 1.452.157 2.136 1.154-.058.033-1.278.743-1.27 2.219M6.468 7.988c.404-.495.685-1.18.61-1.864-.585.025-1.294.388-1.723.883-.38.437-.71 1.138-.619 1.806.652.05 1.328-.338 1.732-.825Z"/></svg>
+      <span class="name">Apple TV</span>
+    </a>
+
+    <a class="tile" data-service="prime" style="--tint:#00A8E1" href="#">
+      <svg class="glyph" data-generic="true" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z"/></svg>
+      <span class="name">Prime Video</span>
+    </a>
+
+    <a class="tile" data-service="netflix" style="--tint:#E50914" href="#">
+      <svg class="glyph" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="m5.398 0 8.348 23.602c2.346.059 4.856.398 4.856.398L10.113 0H5.398zm8.489 0v9.172l4.715 13.33V0h-4.715zM5.398 1.5V24c1.873-.225 2.81-.312 4.715-.398V14.83L5.398 1.5z"/></svg>
+      <span class="name">Netflix</span>
+    </a>
+</nav>
 
 <script>
 (function () {
@@ -362,49 +189,37 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
 
   var YT_REDIRECT = "https://www.youtube.com/redirect?q=";
 
-  // Drop your own logo files in and point this at their folder, e.g. "logos".
-  // Each tile then loads "<LOGO_DIR>/<service id>.svg" and falls back to the
-  // typographic channel mark if that file is missing. Empty = no image
-  // requests at all, which is the default so the page stays self-contained.
+  // Point this at a folder of your own SVGs to replace the built-in marks.
+  // Each tile loads "<LOGO_DIR>/<service id>.svg" and keeps its built-in
+  // glyph if that file is missing. Empty means no image requests at all.
   var LOGO_DIR = "";
 
-  // Region tables. Only values that genuinely differ per country are listed:
-  // Apple TV is path-scoped, Prime Video uses the local Amazon storefront,
-  // YouTube takes a content locale. Plex and Netflix are account-scoped and
-  // have no per-country URL, so they are the same everywhere.
+  // Only the values that genuinely differ per country: Apple TV is
+  // path-scoped, Prime Video uses the local Amazon storefront, YouTube takes
+  // a content locale. Plex and Netflix are account-scoped everywhere.
   var COUNTRIES = [
-    { code: "uk", label: "UK", name: "United Kingdom", apple: "gb", yt: "GB", amazon: "www.amazon.co.uk" },
-    { code: "ie", label: "IE", name: "Ireland",        apple: "ie", yt: "IE", amazon: "www.amazon.co.uk" },
-    { code: "us", label: "US", name: "United States",  apple: "us", yt: "US", amazon: "www.amazon.com" },
-    { code: "ca", label: "CA", name: "Canada",         apple: "ca", yt: "CA", amazon: "www.amazon.ca" },
-    { code: "au", label: "AU", name: "Australia",      apple: "au", yt: "AU", amazon: "www.amazon.com.au" },
-    { code: "de", label: "DE", name: "Germany",        apple: "de", yt: "DE", amazon: "www.amazon.de" },
-    { code: "fr", label: "FR", name: "France",         apple: "fr", yt: "FR", amazon: "www.amazon.fr" },
-    { code: "es", label: "ES", name: "Spain",          apple: "es", yt: "ES", amazon: "www.amazon.es" },
-    { code: "it", label: "IT", name: "Italy",          apple: "it", yt: "IT", amazon: "www.amazon.it" },
-    { code: "nl", label: "NL", name: "Netherlands",    apple: "nl", yt: "NL", amazon: "www.amazon.nl" }
+    { code: "uk", name: "United Kingdom", apple: "gb", yt: "GB", amazon: "www.amazon.co.uk" },
+    { code: "ie", name: "Ireland",        apple: "ie", yt: "IE", amazon: "www.amazon.co.uk" },
+    { code: "us", name: "United States",  apple: "us", yt: "US", amazon: "www.amazon.com" },
+    { code: "ca", name: "Canada",         apple: "ca", yt: "CA", amazon: "www.amazon.ca" },
+    { code: "au", name: "Australia",      apple: "au", yt: "AU", amazon: "www.amazon.com.au" },
+    { code: "de", name: "Germany",        apple: "de", yt: "DE", amazon: "www.amazon.de" },
+    { code: "fr", name: "France",         apple: "fr", yt: "FR", amazon: "www.amazon.fr" },
+    { code: "es", name: "Spain",          apple: "es", yt: "ES", amazon: "www.amazon.es" },
+    { code: "it", name: "Italy",          apple: "it", yt: "IT", amazon: "www.amazon.it" },
+    { code: "nl", name: "Netherlands",    apple: "nl", yt: "NL", amazon: "www.amazon.nl" }
   ];
-  var ALIASES = { gb: "uk", "en-gb": "uk", "en-us": "us", uk: "uk" };
+  var ALIASES = { gb: "uk", "en-gb": "uk", "en-us": "us" };
   var DEFAULT_CODE = "uk";
 
   var SERVICES = {
     // native: the Tesla browser already hands youtube.com to the full-screen
     // app, so wrapping it in its own redirect would only add an interstitial.
-    plex:    { name: "Plex", native: false,
-               url: function () { return "https://app.plex.tv/desktop/"; },
-               host: function () { return "app.plex.tv"; } },
-    youtube: { name: "YouTube", native: true,
-               url: function (c) { return "https://www.youtube.com/?persist_gl=1&gl=" + c.yt; },
-               host: function () { return "youtube.com"; } },
-    appletv: { name: "Apple TV", native: false,
-               url: function (c) { return "https://tv.apple.com/" + c.apple; },
-               host: function (c) { return "tv.apple.com/" + c.apple; } },
-    prime:   { name: "Prime Video", native: false,
-               url: function (c) { return "https://" + c.amazon + "/gp/video/storefront"; },
-               host: function (c) { return c.amazon.replace(/^www\./, ""); } },
-    netflix: { name: "Netflix", native: false,
-               url: function () { return "https://www.netflix.com/browse"; },
-               host: function () { return "netflix.com"; } }
+    plex:    { native: false, url: function () { return "https://app.plex.tv/desktop/"; } },
+    youtube: { native: true,  url: function (c) { return "https://www.youtube.com/?persist_gl=1&gl=" + c.yt; } },
+    appletv: { native: false, url: function (c) { return "https://tv.apple.com/" + c.apple; } },
+    prime:   { native: false, url: function (c) { return "https://" + c.amazon + "/gp/video/storefront"; } },
+    netflix: { native: false, url: function () { return "https://www.netflix.com/browse"; } }
   };
 
   function findCountry(raw) {
@@ -421,68 +236,31 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
   var country = findCountry(params.get("c") || params.get("country")) || findCountry(DEFAULT_CODE);
   var fullscreen = params.get("fs") !== "0" && params.get("fs") !== "off";
 
-  var deck = document.getElementById("deck");
-  var picker = document.getElementById("picker");
-  var fsToggle = document.getElementById("fsToggle");
-  var selfLaunch = document.getElementById("selfLaunch");
-  var tiles = deck.querySelectorAll(".tile");
+  var select = document.getElementById("region");
+  var tiles = document.getElementById("deck").querySelectorAll(".tile");
 
-  document.getElementById("count").textContent = String(tiles.length);
-
-  function mountLogos() {
-    if (!LOGO_DIR) return;
-    for (var i = 0; i < tiles.length; i++) {
-      (function (tile) {
-        var id = tile.getAttribute("data-service");
-        var svc = SERVICES[id];
-        if (!svc) return;
-        var mark = tile.querySelector(".glyph");
-        var img = document.createElement("img");
-        img.className = "logo";
-        img.alt = svc.name;
-        img.decoding = "async";
-        img.addEventListener("load", function () { mark.hidden = true; });
-        img.addEventListener("error", function () { img.remove(); mark.hidden = false; });
-        img.src = LOGO_DIR.replace(/\/+$/, "") + "/" + id + ".svg";
-        tile.querySelector(".art").appendChild(img);
-      })(tiles[i]);
-    }
-  }
+  COUNTRIES.forEach(function (c) {
+    var o = document.createElement("option");
+    o.value = c.code;
+    o.textContent = c.name;
+    select.appendChild(o);
+  });
 
   function render() {
+    select.value = country.code;
     for (var i = 0; i < tiles.length; i++) {
-      var tile = tiles[i];
-      var svc = SERVICES[tile.getAttribute("data-service")];
+      var svc = SERVICES[tiles[i].getAttribute("data-service")];
       if (!svc) continue;
       var target = svc.url(country);
-      var viaYouTube = fullscreen && !svc.native;
-      tile.href = viaYouTube ? YT_REDIRECT + encodeURIComponent(target) : target;
-      tile.querySelector(".route-kind").textContent = viaYouTube ? "via youtube" : "direct";
-      tile.querySelector(".route-host").textContent = svc.host(country);
+      tiles[i].href = (fullscreen && !svc.native)
+        ? YT_REDIRECT + encodeURIComponent(target)
+        : target;
     }
-
-    var pills = picker.querySelectorAll(".pill");
-    for (var j = 0; j < pills.length; j++) {
-      pills[j].setAttribute("aria-pressed", String(pills[j].value === country.code));
-    }
-
-    fsToggle.setAttribute("aria-pressed", String(fullscreen));
-
-    // Bookmarkable full-screen entry point for the launcher itself.
-    try {
-      var self = new URL(window.location.href);
-      self.hash = "";
-      self.searchParams.set("c", country.code);
-      if (fullscreen) { self.searchParams.delete("fs"); } else { self.searchParams.set("fs", "0"); }
-      selfLaunch.href = YT_REDIRECT + encodeURIComponent(self.toString());
-      selfLaunch.hidden = false;
-    } catch (e) { selfLaunch.hidden = true; }
   }
 
   function syncUrl() {
     // Sandboxed frames and some file:// contexts refuse replaceState. The
-    // choice still applies to the links either way, so failing here is not
-    // worth breaking the page over.
+    // choice still applies to the links, so this is not worth throwing over.
     try {
       var next = new URL(window.location.href);
       next.searchParams.set("c", country.code);
@@ -491,31 +269,26 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
     } catch (e) { /* keep the rendered links, drop the URL sync */ }
   }
 
-  // Build the region picker from the table so the two never drift apart.
-  picker.innerHTML = "<legend>Region</legend>";
-  COUNTRIES.forEach(function (c) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = "pill";
-    b.value = c.code;
-    b.textContent = c.label;
-    b.title = c.name;
-    b.setAttribute("aria-label", c.name);
-    b.addEventListener("click", function () {
-      country = c;
-      syncUrl();
-      render();
-    });
-    picker.appendChild(b);
-  });
-
-  fsToggle.addEventListener("click", function () {
-    fullscreen = !fullscreen;
+  select.addEventListener("change", function () {
+    country = findCountry(select.value) || country;
     syncUrl();
     render();
   });
 
-  mountLogos();
+  if (LOGO_DIR) {
+    Array.prototype.forEach.call(tiles, function (tile) {
+      var glyph = tile.querySelector(".glyph");
+      var img = document.createElement("img");
+      img.className = "logo";
+      img.alt = "";
+      img.decoding = "async";
+      img.addEventListener("load", function () { glyph.hidden = true; });
+      img.addEventListener("error", function () { img.remove(); });
+      img.src = LOGO_DIR.replace(/\/+$/, "") + "/" + tile.getAttribute("data-service") + ".svg";
+      tile.insertBefore(img, glyph);
+    });
+  }
+
   syncUrl();
   render();
 })();
