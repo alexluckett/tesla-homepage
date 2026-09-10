@@ -71,7 +71,10 @@ body{
 .region{position:relative;display:flex}
 .region select{
   appearance:none;-webkit-appearance:none;
-  padding-right:40px;
+  padding:0 32px 0 16px;
+  font-size:21px;
+  letter-spacing:normal;
+  line-height:1;
 }
 .region option{background:var(--stage);color:var(--house);text-transform:none;letter-spacing:normal}
 /* Chevron as a clip-path so the page still makes no network requests. */
@@ -363,7 +366,8 @@ body{
   MARKETS.forEach(function (m) {
     var o = document.createElement("option");
     o.value = m.c;
-    o.textContent = m.f + "  " + m.n;
+    o.textContent = m.f;
+    o.title = m.n;
     select.appendChild(o);
   });
 

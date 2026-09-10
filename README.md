@@ -31,7 +31,10 @@ Practical notes:
 ## Using it
 
 **Country** — the dropdown sets which channels are offered and which regional URL each one
-gets. Defaults to the UK.
+gets. Defaults to the UK. It shows flags only; the country name is on each option's
+tooltip. Flag emoji render on the Tesla's Android-based browser, but some platforms
+(Windows Chrome among them) substitute the two-letter code instead — still legible, just
+less pretty.
 
 **Edit** — tap it and every channel for that country appears, including ones you have
 hidden (dimmed, dashed). Tap any tile to toggle it. Tap **Done** to go back. There is no
