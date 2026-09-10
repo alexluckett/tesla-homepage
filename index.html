@@ -18,7 +18,7 @@
   --dim:#8D8478;      /* quiet ink */
   --shell:1200px;    /* one measure shared by the bar and the grid */
   --pad:clamp(14px, 2.4vw, 32px);
-  --gap:clamp(14px, 1.7vw, 24px);
+  --gap:clamp(18px, 2.4vw, 32px);
   --sans:-apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
 }
 *{box-sizing:border-box}
@@ -112,7 +112,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   flex-wrap:wrap;gap:10px;
   padding:14px;
-  aspect-ratio:5/4;
+  aspect-ratio:3/2;
   border:1px solid var(--rail);
   border-radius:18px;
   background:var(--stage);
@@ -177,10 +177,7 @@ body{
   padding:40px 0;
 }
 
-/* Taller tiles do not fit a short landscape window; flatten them there. */
-@media (min-width:641px) and (max-height:640px){
-  .tile{aspect-ratio:3/2}
-}
+/* Flatten the tiles on a short landscape window so a long market still fits. */
 @media (min-width:641px) and (max-height:520px){
   .tile{aspect-ratio:2/1}
 }
