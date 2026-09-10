@@ -163,8 +163,15 @@ Marks are inlined as SVG paths so they cost no extra requests, and come from fou
 | [CoreUI Brands](https://github.com/coreui/coreui-icons) | CC0-1.0 | Hulu |
 | [selfh.st/icons](https://github.com/selfhst/icons) | **CC BY 4.0** | Disney+, Prime Video |
 | [Streamline Logos](https://www.streamlinehq.com/) | **CC BY 4.0** | BBC iPlayer |
+| [custom-brand-icons](https://github.com/elax46/custom-brand-icons) | **CC BY-NC-SA 4.0** | Channel 5 |
 
-The last two require attribution — that is what this table is for; keep it if you fork.
+The bottom three require attribution — that is what this table is for; keep it if you fork.
+
+**The Channel 5 mark carries the strictest terms here**: CC BY-NC-SA 4.0 is
+non-commercial, and its ShareAlike clause asks that derivatives be licensed alike. That is
+fine for a private launcher, but if this repository is ever put to commercial use or
+relicensed, delete `channel5`'s `p`/`t`/`vb` fields from the data blob — the tile falls
+back to its name and nothing else breaks.
 
 The sets draw on different grids and some marks sit in a corner of theirs, so each mark
 carries its own `vb` (a viewBox tightened to the artwork's bounding box) where it is not
@@ -184,15 +191,12 @@ asks users to seek the permissions their project needs. Using them to label a li
 service they belong to, in a private launcher, is ordinary identifying use.
 
 **With a mark:** Plex, YouTube, Netflix, Prime Video, Apple TV, Disney+, BBC iPlayer, ITVX,
-Channel 4, NOW, Paramount+, Crunchyroll, Max, Tubi, Hulu, CBC Gem, ZDF, RTL+, Virgin Media
-Player.
+Channel 4, Channel 5, NOW, Paramount+, Crunchyroll, Max, Tubi, Hulu, CBC Gem, ZDF, RTL+,
+Virgin Media Player.
 
-**Name only:** Channel 5, Peacock, Pluto TV, Crave, RTÉ Player, and the Australian, French,
-Spanish, Italian, Dutch and German public broadcasters. Channel 5 does exist in
-[custom-brand-icons](https://github.com/elax46/custom-brand-icons), but under
-CC BY-NC-SA 4.0 — non-commercial with a ShareAlike obligation — so it is left out rather
-than quietly attaching copyleft terms to this repository. `LOGO_DIR` below is the way to
-supply any of these.
+**Name only:** Peacock, Pluto TV, Crave, RTÉ Player, and the Australian, French, Spanish,
+Italian, Dutch and German public broadcasters. `LOGO_DIR` below is the way to supply
+these.
 
 Brand colours are used exactly as the pack ships them, except where a mark would be
 invisible on the dark background. Anything below 35% lightness is lifted in HSL so the hue

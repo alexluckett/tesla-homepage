@@ -12,17 +12,17 @@ It is off by default so the page makes no image requests at all. With it on, eve
 in the current market requests its file, and any that 404 simply keep the built-in mark —
 so a partial set is fine.
 
-## The four with no mark at all
+## Channels with no mark
 
-These currently render as a plain name, because no CC0 icon set carries them (Simple
-Icons, CoreUI Brands and gilbarbara/logos were all checked):
+These render as a plain name, so a file here is the only way to give them a logo:
 
 ```
-prime.svg        Prime Video
-disneyplus.svg   Disney+
-iplayer.svg      BBC iPlayer
-channel5.svg     Channel 5
+peacock.svg      Peacock          crave.svg        Crave
+pluto.svg        Pluto TV         rteplayer.svg    RTE Player
 ```
+
+Plus the Australian, French, Spanish, Italian, Dutch and German broadcasters — see the
+full id list below.
 
 ## Every channel id
 
