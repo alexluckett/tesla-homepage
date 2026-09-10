@@ -36,21 +36,31 @@ there to scan by, the name to read. Flag emoji render on the Tesla's Android-bas
 but some platforms (Windows Chrome among them) substitute the two-letter code instead —
 which is why the name is spelled out rather than left to the flag alone.
 
-**Edit** — tap it and every channel for that country appears, including ones you have
-hidden (dimmed, dashed). Tap any tile to toggle it. Tap **Done** to go back. There is no
-long-press or drag: both are unpleasant to hit accurately in a moving car.
+**Edit** — tap it, or **long-press any card**, and every channel for that country appears,
+including ones you have hidden (dimmed, dashed). Tap **Done** to go back. Both routes in
+are kept: the button is always there, the long press saves reaching for it.
+
+In edit mode a card does two things:
+
+- **Tap** to show or hide it.
+- **Drag** it to reorder. Order is stored per country, like hidden channels, and a channel
+  added in a later release falls to the end rather than disappearing.
+
+A gesture is read as a drag once the pointer moves more than 8px, so a slightly imprecise
+tap still toggles rather than shuffling the grid.
 
 Hidden channels are stored **per country**. Switching to another country shows that
 market's full list from scratch; switching back restores the list you had filtered down.
 
 ## Storage
 
-Two `localStorage` keys, both written only when you change something:
+Three `localStorage` keys, each written only when you change something:
 
 | Key | Contents |
 | --- | --- |
 | `frontrow.market` | The selected country code. |
 | `frontrow.hidden` | `{"uk":["iplayer"],"us":[...]}` — hidden channels, per country. |
+| `frontrow.order` | `{"uk":["netflix","plex",...]}` — channel order, per country. |
 
 No cookies and no analytics. Every read and write is wrapped in `try`/`catch`, so the app
 still runs where site data is blocked — it just forgets between sessions.

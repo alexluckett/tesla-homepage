@@ -97,13 +97,16 @@ body{
 .deck{
   flex:1;
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
-  align-content:center;
+  grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+  /* Cards this size overflow a car screen, so the grid starts at the top and
+     scrolls rather than centring and clipping its first row. */
+  align-content:start;
   gap:var(--gap);
   width:100%;
   max-width:var(--shell);
   margin-inline:auto;
   padding:0 var(--pad) clamp(16px,3vh,36px);
+  padding-block-start:clamp(4px,1vh,12px);
 }
 .tile{
   --tint:var(--house);
@@ -131,17 +134,17 @@ body{
 .tile:hover{background:var(--riser);border-color:var(--tint)}
 .tile:active{transform:scale(.985)}
 .tile:focus-visible{outline:3px solid var(--house);outline-offset:3px}
-.lockup .glyph{height:clamp(26px, 2.9vw, 36px)}
+.lockup .glyph{height:clamp(34px, 4.4vw, 60px)}
 .glyph{
-  height:clamp(34px, 4.2vw, 54px);
+  height:clamp(44px, 6vw, 84px);
   width:auto;
   fill:var(--tint);
   display:block;
 }
-.logo{max-width:70%;max-height:clamp(34px,4.2vw,54px);object-fit:contain;display:block}
+.logo{max-width:70%;max-height:clamp(44px,6vw,84px);object-fit:contain;display:block}
 /* Fallback only - used where no mark is available for the channel. */
 .wordmark{
-  font-size:clamp(14px, 1.45vw, 19px);
+  font-size:clamp(17px, 2vw, 26px);
   font-weight:600;
   letter-spacing:.01em;
   text-align:center;
@@ -151,7 +154,15 @@ body{
 }
 
 /* ---- Edit mode --------------------------------------------------------- */
-.deck.editing .tile{cursor:pointer}
+.deck.editing .tile{cursor:grab;touch-action:none}
+.tile.dragging{
+  cursor:grabbing;
+  opacity:.92;
+  transform:scale(1.03);
+  pointer-events:none;          /* so elementFromPoint sees the tile beneath */
+  z-index:2;
+  box-shadow:0 14px 34px rgba(0,0,0,.55);
+}
 .deck.editing .tile.off{
   opacity:.34;
   border-style:dashed;
@@ -181,7 +192,7 @@ body{
   .tile{aspect-ratio:2/1}
 }
 @media (max-width:640px){
-  .deck{grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));align-content:start}
+  .deck{grid-template-columns:repeat(auto-fill, minmax(210px, 1fr));align-content:start}
   .brand{display:none}
 }
 @media (prefers-reduced-motion:reduce){
@@ -211,6 +222,9 @@ body{
   var STORE_HIDDEN = "frontrow.hidden";
   var STORE_BOOT = "frontrow.boot";
   var STORE_SEEN = "frontrow.seen";
+  var STORE_ORDER = "frontrow.order";
+  var LONG_PRESS_MS = 450;
+  var DRAG_SLOP = 8;
 
   // Point this at a folder of your own SVGs to override the built-in marks.
   // Each tile loads "<LOGO_DIR>/<channel id>.svg" and keeps what it already
@@ -283,6 +297,10 @@ body{
   // market's own full list, and switching back restores its filtering.
   var hidden = load(STORE_HIDDEN, {});
   if (!hidden || typeof hidden !== "object") hidden = {};
+  // Channel order, per market, same as hidden. Anything not in the stored list
+  // falls to the end, so channels added in a later release still appear.
+  var order = load(STORE_ORDER, {});
+  if (!order || typeof order !== "object") order = {};
   var editing = false;
 
   function hiddenFor(code) {
@@ -297,6 +315,27 @@ body{
     if (at === -1) { list.push(id); } else { list.splice(at, 1); }
     hidden[market.c] = list;
     save(STORE_HIDDEN, hidden);
+  }
+
+  function orderedChannels() {
+    var saved = order[market.c];
+    if (Object.prototype.toString.call(saved) !== "[object Array]") return market.ch.slice();
+    var out = [];
+    saved.forEach(function (id) {
+      if (market.ch.indexOf(id) !== -1 && out.indexOf(id) === -1) out.push(id);
+    });
+    market.ch.forEach(function (id) { if (out.indexOf(id) === -1) out.push(id); });
+    return out;
+  }
+
+  // Only ever called from a drag, which only happens in edit mode - where every
+  // channel is on screen, so this captures the full list rather than dropping
+  // the hidden ones.
+  function saveOrder() {
+    var ids = [], nodes = deck.querySelectorAll(".tile");
+    for (var i = 0; i < nodes.length; i++) ids.push(nodes[i].getAttribute("data-channel"));
+    order[market.c] = ids;
+    save(STORE_ORDER, order);
   }
 
   function urlFor(svc) {
@@ -384,7 +423,7 @@ body{
     deck.textContent = "";
 
     var shown = 0;
-    market.ch.forEach(function (id) {
+    orderedChannels().forEach(function (id) {
       if (!editing && isHidden(id)) return;
       var tile = buildTile(id);
       if (!tile) return;
@@ -498,7 +537,79 @@ body{
     return null;
   }
 
+  function tileUnder(x, y, exclude) {
+    var t = tileFrom(document.elementFromPoint(x, y));
+    return (t && t !== exclude) ? t : null;
+  }
+
+  // press tracks one pointer from down to up. It decides between three
+  // outcomes: a tap (toggle, or follow the link), a long press (enter edit
+  // mode), and a drag (reorder). Movement past DRAG_SLOP rules out the tap.
+  var press = null;
+  var swallowClick = false;
+
+  function endPress(ev) {
+    if (!press) return;
+    if (press.timer) { window.clearTimeout(press.timer); }
+    if (press.dragging) {
+      press.tile.classList.remove("dragging");
+      try { press.tile.releasePointerCapture(press.id); } catch (e) { /* fine */ }
+      saveOrder();
+      swallowClick = true;   // a drop is not a tap
+    }
+    press = null;
+  }
+
+  deck.addEventListener("pointerdown", function (ev) {
+    if (ev.button && ev.button !== 0) return;
+    // A drag does not always emit a trailing click, so a suppression set by
+    // the last gesture can survive to eat the next real tap. Each new gesture
+    // starts clean.
+    swallowClick = false;
+    var tile = tileFrom(ev.target);
+    if (!tile) return;
+    press = { tile: tile, x: ev.clientX, y: ev.clientY, id: ev.pointerId,
+              dragging: false, moved: false, timer: 0 };
+    if (editing) return;      // already there; movement will start a drag
+    press.timer = window.setTimeout(function () {
+      if (!press || press.moved) return;
+      press.timer = 0;
+      editing = true;
+      swallowClick = true;    // the click that follows is not a toggle
+      render();               // rebuilds the deck, so the held tile is gone
+      press = null;
+    }, LONG_PRESS_MS);
+  });
+
+  deck.addEventListener("pointermove", function (ev) {
+    if (!press) return;
+    if (!press.moved &&
+        (Math.abs(ev.clientX - press.x) > DRAG_SLOP ||
+         Math.abs(ev.clientY - press.y) > DRAG_SLOP)) {
+      press.moved = true;
+      if (press.timer) { window.clearTimeout(press.timer); press.timer = 0; }
+      if (editing) {
+        press.dragging = true;
+        press.tile.classList.add("dragging");
+        try { press.tile.setPointerCapture(ev.pointerId); } catch (e) { /* fine */ }
+      }
+    }
+    if (!press.dragging) return;
+    ev.preventDefault();
+    var over = tileUnder(ev.clientX, ev.clientY, press.tile);
+    if (!over) return;
+    var box = over.getBoundingClientRect();
+    var after = (ev.clientX - box.left) > box.width / 2;
+    deck.insertBefore(press.tile, after ? over.nextSibling : over);
+  });
+
+  deck.addEventListener("pointerup", endPress);
+  deck.addEventListener("pointercancel", endPress);
+  // A long press on a link otherwise raises the browser's own menu.
+  deck.addEventListener("contextmenu", function (ev) { ev.preventDefault(); });
+
   function handleToggle(ev) {
+    if (swallowClick) { swallowClick = false; ev.preventDefault(); return; }
     if (!editing) return;
     var tile = tileFrom(ev.target);
     if (!tile) return;
