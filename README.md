@@ -150,7 +150,9 @@ Both tables are generated into the `<script id="data">` blob by
   dropdown is built from this list, so a new market appears automatically.
 
 The grid is `repeat(auto-fill, minmax(180px, 1fr))`, so it absorbs any number of channels
-without further changes.
+without further changes. The control bar and the grid share one measure, `--shell`
+(1080px), and both centre on wider screens — change it in one place to widen or narrow the
+whole layout.
 
 ## Design
 

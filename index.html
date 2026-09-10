@@ -16,6 +16,7 @@
   --rail:#3A332C;     /* hairlines */
   --house:#F5EFE6;    /* primary ink */
   --dim:#8D8478;      /* quiet ink */
+  --shell:1080px;    /* one measure shared by the bar and the grid */
   --pad:clamp(14px, 2.4vw, 32px);
   --gap:clamp(10px, 1.1vw, 16px);
   --sans:-apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
@@ -39,6 +40,9 @@ body{
 /* ---- Chrome: a quiet name, and the two controls ------------------------ */
 .bar{
   display:flex;align-items:center;gap:10px;
+  width:100%;
+  max-width:var(--shell);
+  margin-inline:auto;
   padding:clamp(12px,1.8vh,20px) var(--pad);
 }
 .brand{
@@ -92,7 +96,7 @@ body{
   align-content:center;
   gap:var(--gap);
   width:100%;
-  max-width:1400px;
+  max-width:var(--shell);
   margin-inline:auto;
   padding:0 var(--pad) clamp(16px,3vh,36px);
 }
