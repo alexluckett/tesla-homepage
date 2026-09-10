@@ -26,7 +26,7 @@ Practical notes:
   in its own redirect would only add a pointless interstitial.
 - This is a firmware-dependent trick. Tesla has closed earlier full-screen holes before,
   and some owners have reported this one failing on particular builds. Add `?fs=0` to fall
-  back to plain direct links.
+  back to plain direct links with no bootstrap.
 
 ## Using it
 
@@ -56,9 +56,26 @@ No cookies and no analytics. Every read and write is wrapped in `try`/`catch`, s
 still runs where site data is blocked — it just forgets between sessions.
 
 `?c=<code>` still works and wins for that visit (handy for a bookmark that always opens a
-particular market); otherwise the stored choice is restored. `?fs=0` disables the
-full-screen redirect and has no on-screen control by design — it is an escape hatch for
-firmware that has closed the trick, not an everyday setting.
+particular market); otherwise the stored choice is restored.
+
+`fs` governs two separate behaviours — whether the launcher bootstraps itself into the
+full-screen view, and whether each channel is routed through the redirect — so it takes
+three settings:
+
+| `fs` | Launcher bootstraps | Channels |
+| --- | --- | --- |
+| absent (default) | yes | via the YouTube redirect |
+| `once` | yes | direct links |
+| `0` or `off` | no | direct links |
+
+**`fs=once` is worth trying and is not confirmed to work.** If the full-screen view
+survives a same-window navigation, it costs one interstitial per session rather than one
+per channel. If it does not, channels open windowed and the default is the better
+behaviour. Testing it takes one drive: bookmark the launcher with `&fs=once` and tap a
+channel.
+
+`fs` has no on-screen control by design — it is a property of the bookmark, not an
+everyday setting.
 
 ### Running the launcher itself full screen
 
@@ -67,7 +84,8 @@ bounces once through the YouTube redirect back to itself, so tapping **Go to sit
 you in the full-screen view with Front Row already in it. Nothing to hand-encode.
 
 The bounce is skipped when `fs=0` is set, so `?fs=0` remains a complete opt-out: no
-bootstrap and no redirect on the channels either.
+bootstrap and no redirect on the channels either. `fs=once` keeps the bootstrap but links
+the channels directly.
 
 The bounce is also skipped when the page is running inside a frame, where navigating the
 whole window out to YouTube is never what is wanted.
@@ -90,12 +108,9 @@ parameter stripped entirely, six consecutive reloads produce exactly one bounce.
 `boot=1` is removed from the address bar on arrival, so bookmarking the page as it sits
 still bootstraps next time.
 
-**If the bounce does not fire.** Handing a page to the YouTube app may require a real user
-gesture; a script-initiated navigation might simply be ignored. If the page is still here
-1.5 seconds after trying, a **Full screen** button appears in the bar that does the same
-thing on a tap. It stays hidden when the bootstrap works, and is not shown on the return
-trip. Whether the automatic version works at all is unconfirmed — it cannot be tested
-outside a car.
+The bounce is script-initiated, which some engines refuse without a real user gesture. It
+has been observed firing on a Tesla, so there is no manual fallback control; if a future
+firmware stops honouring it the page simply stays windowed rather than breaking.
 
 The browser's Fullscreen API is not a substitute: it fills the browser's viewport, and the
 Tesla browser is itself a window in the car's UI, so it cannot escape that container the
