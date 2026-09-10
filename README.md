@@ -64,15 +64,17 @@ three settings:
 
 | `fs` | Launcher bootstraps | Channels |
 | --- | --- | --- |
-| absent (default) | yes | via the YouTube redirect |
-| `once` | yes | direct links |
+| absent (default) | yes | direct links |
+| `all` | yes | via the YouTube redirect |
 | `0` or `off` | no | direct links |
 
-**`fs=once` is worth trying and is not confirmed to work.** If the full-screen view
-survives a same-window navigation, it costs one interstitial per session rather than one
-per channel. If it does not, channels open windowed and the default is the better
-behaviour. Testing it takes one drive: bookmark the launcher with `&fs=once` and tap a
-channel.
+The default costs **one interstitial per session, not one per channel**: the full-screen
+view survives a same-window navigation, so once the launcher is in it, plain links stay
+there too. This was confirmed on a car rather than assumed.
+
+`fs=all` restores a redirect on every channel, for a firmware where that turns out not to
+hold. `fs=once` is the old name for the default and still resolves to it, so bookmarks
+written before the change keep working.
 
 `fs` has no on-screen control by design — it is a property of the bookmark, not an
 everyday setting.
@@ -84,8 +86,7 @@ bounces once through the YouTube redirect back to itself, so tapping **Go to sit
 you in the full-screen view with Front Row already in it. Nothing to hand-encode.
 
 The bounce is skipped when `fs=0` is set, so `?fs=0` remains a complete opt-out: no
-bootstrap and no redirect on the channels either. `fs=once` keeps the bootstrap but links
-the channels directly.
+bootstrap and no redirect on the channels either.
 
 The bounce is also skipped when the page is running inside a frame, where navigating the
 whole window out to YouTube is never what is wanted.

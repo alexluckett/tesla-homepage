@@ -255,17 +255,20 @@ body{
             || findMarket(load(STORE_MARKET, null))
             || findMarket(DEFAULT_CODE);
   // fs controls two separate things, so it has three settings:
-  //   (absent)  bootstrap the launcher, and route each channel through YouTube
-  //   once      bootstrap the launcher, then link channels directly - one
-  //             interstitial per session instead of one per channel. Only
-  //             works if the full-screen view survives a same-window
-  //             navigation, which is untested.
+  //   (absent)  bootstrap the launcher, then link channels directly. The
+  //             full-screen view survives a same-window navigation, so one
+  //             interstitial per session covers every channel.
+  //   all       also route each channel through YouTube - a per-channel
+  //             interstitial, for a firmware where the view does not persist
   //   0 / off   neither
+  // "once" is the old name for the default and still works, so bookmarks
+  // written before it became the default keep behaving.
   var fsMode = (params.get("fs") || "").toLowerCase();
   if (fsMode === "off") fsMode = "0";
-  if (fsMode !== "0" && fsMode !== "once") fsMode = "on";
+  if (fsMode === "on") fsMode = "all";
+  if (fsMode !== "0" && fsMode !== "all") fsMode = "once";
   var bootstraps = fsMode !== "0";
-  var wrapChannels = fsMode === "on";
+  var wrapChannels = fsMode === "all";
   // Hidden channels are kept per market: switching country reveals that
   // market's own full list, and switching back restores its filtering.
   var hidden = load(STORE_HIDDEN, {});
@@ -436,7 +439,7 @@ body{
       var next = new URL(window.location.href);
       next.searchParams.delete("boot");
       next.searchParams.set("c", market.c);
-      if (fsMode === "on") { next.searchParams.delete("fs"); } else { next.searchParams.set("fs", fsMode); }
+      if (fsMode === "once") { next.searchParams.delete("fs"); } else { next.searchParams.set("fs", fsMode); }
       window.history.replaceState(null, "", next.toString());
     } catch (e) { /* keep the rendered links, drop the URL sync */ }
   }
