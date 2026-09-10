@@ -197,7 +197,6 @@ body{
   <span class="region">
     <select id="region" class="ctl" aria-label="Country"></select>
   </span>
-  <button type="button" id="boot" class="ctl" hidden>Full screen</button>
   <button type="button" id="edit" class="ctl" aria-pressed="false">Edit</button>
 </div>
 
@@ -227,7 +226,6 @@ body{
   var deck = document.getElementById("deck");
   var select = document.getElementById("region");
   var editBtn = document.getElementById("edit");
-  var bootBtn = document.getElementById("boot");
 
   // Storage can be unavailable (private mode, blocked site data) and throws on
   // access in some contexts, so every touch is guarded and the app still runs.
@@ -256,7 +254,18 @@ body{
   var market = findMarket(params.get("c") || params.get("country"))
             || findMarket(load(STORE_MARKET, null))
             || findMarket(DEFAULT_CODE);
-  var fullscreen = params.get("fs") !== "0" && params.get("fs") !== "off";
+  // fs controls two separate things, so it has three settings:
+  //   (absent)  bootstrap the launcher, and route each channel through YouTube
+  //   once      bootstrap the launcher, then link channels directly - one
+  //             interstitial per session instead of one per channel. Only
+  //             works if the full-screen view survives a same-window
+  //             navigation, which is untested.
+  //   0 / off   neither
+  var fsMode = (params.get("fs") || "").toLowerCase();
+  if (fsMode === "off") fsMode = "0";
+  if (fsMode !== "0" && fsMode !== "once") fsMode = "on";
+  var bootstraps = fsMode !== "0";
+  var wrapChannels = fsMode === "on";
   // Hidden channels are kept per market: switching country reveals that
   // market's own full list, and switching back restores its filtering.
   var hidden = load(STORE_HIDDEN, {});
@@ -296,7 +305,7 @@ body{
       a.setAttribute("tabindex", "0");
       a.setAttribute("aria-pressed", String(!off));
     } else {
-      a.href = (fullscreen && !svc.native) ? YT_REDIRECT + encodeURIComponent(url) : url;
+      a.href = (wrapChannels && !svc.native) ? YT_REDIRECT + encodeURIComponent(url) : url;
     }
 
     if (svc.p || svc.b) {
@@ -408,7 +417,7 @@ body{
   function bootstrapFullScreen() {
     if (window.top !== window.self) return false;  // framed: never bootstrap out
     if (isRevisit()) return false;                 // a refresh or a back nav
-    if (!fullscreen) return false;                 // ?fs=0 opts out entirely
+    if (!bootstraps) return false;                 // ?fs=0 opts out entirely
     if (params.get("boot") === "1") return false;  // this is the return trip
     var last = Number(load(STORE_BOOT, 0)) || 0;
     if (Date.now() - last < 30000) return false;   // just tried; do not retry
@@ -427,7 +436,7 @@ body{
       var next = new URL(window.location.href);
       next.searchParams.delete("boot");
       next.searchParams.set("c", market.c);
-      if (fullscreen) { next.searchParams.delete("fs"); } else { next.searchParams.set("fs", "0"); }
+      if (fsMode === "on") { next.searchParams.delete("fs"); } else { next.searchParams.set("fs", fsMode); }
       window.history.replaceState(null, "", next.toString());
     } catch (e) { /* keep the rendered links, drop the URL sync */ }
   }
@@ -479,18 +488,7 @@ body{
 
   save(STORE_MARKET, market.c);
 
-  // A script-initiated navigation may not be enough to hand the page to the
-  // YouTube app - some engines only do that on a real user gesture. If we are
-  // still here shortly after trying, offer a button that does it on a tap.
-  if (bootstrapFullScreen()) {
-    window.setTimeout(function () { bootBtn.hidden = false; }, 1500);
-  }
-
-  bootBtn.addEventListener("click", function () {
-    var here = new URL(window.location.href);
-    here.searchParams.set("boot", "1");
-    window.location.href = YT_REDIRECT + encodeURIComponent(here.toString());
-  });
+  bootstrapFullScreen();
 
   syncUrl();
   render();
