@@ -21,10 +21,10 @@ S = {
  'now':         ('NOW',                 'now',           'https://www.nowtv.com/'),
  # Ireland
  'rteplayer':   ('RTE Player',           None,           'https://www.rte.ie/player/'),
- 'vmplayer':    ('Virgin Media Player', 'virginmedia',   'https://play.virginmediatelevision.ie/'),
+ 'vmplayer':    ('Virgin Media Play',   'virginmedia',   'https://play.virginmediatelevision.ie/'),
  # United States
  'hulu':        ('Hulu',                'cib:hulu',      'https://www.hulu.com/'),
- 'max':         ('Max',                 'max',           'https://www.hbomax.com/'),
+ 'max':         ('HBO Max',             'max',           'https://www.hbomax.com/'),
  'peacock':     ('Peacock',              None,           'https://www.peacocktv.com/'),
  'tubi':        ('Tubi',                'tubi',          'https://tubitv.com/'),
  'pluto':       ('Pluto TV',             None,           'https://pluto.tv/'),

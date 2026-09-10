@@ -134,8 +134,8 @@ in the `MARKETS` table, so nothing appears in a country it does not serve.
 | Market | Channels |
 | --- | --- |
 | 🇬🇧 United Kingdom | Plex, YouTube, Netflix, Prime Video, Apple TV, Disney+, BBC iPlayer, ITVX, Channel 4, Channel 5, NOW, Paramount+, Crunchyroll |
-| 🇮🇪 Ireland | + RTÉ Player, Virgin Media Player |
-| 🇺🇸 United States | + Hulu, Max, Peacock, Tubi, Pluto TV |
+| 🇮🇪 Ireland | + RTÉ Player, Virgin Media Play |
+| 🇺🇸 United States | + Hulu, HBO Max, Peacock, Tubi, Pluto TV |
 | 🇨🇦 Canada | + CBC Gem, Crave, Tubi |
 | 🇦🇺 Australia | + ABC iview, SBS On Demand, 9Now, 7plus, 10 play, Stan, Binge |
 | 🇩🇪 Germany | + ARD Mediathek, ZDF, Joyn, RTL+ |
@@ -169,8 +169,8 @@ Every URL was checked in September 2026 against the service's official website o
 Wikidata (or Amazon's provider page), the organisation on its TLS certificate, and its
 domain registration. Channels that have rebranded point at their current domain rather than
 the old one that redirects, so that a lapsed old domain can never be picked up by someone
-else: ITVX (`itv.com`), Max (`hbomax.com`), 10 play (`10.com.au`), M6+ (`m6.fr`), Mitele
-(`mediasetinfinity.es`) and Virgin Media Player (`play.virginmediatelevision.ie`).
+else: ITVX (`itv.com`), HBO Max (`hbomax.com`), 10 play (`10.com.au`), M6+ (`m6.fr`), Mitele
+(`mediasetinfinity.es`) and Virgin Media Play (`play.virginmediatelevision.ie`).
 
 ## Logos
 
@@ -179,7 +179,7 @@ it out — Plex, Apple TV, ITVX, NOW, Tubi, ZDF — the mark stands alone. Where
 symbol, the tile pairs it with the name as a lockup, so nothing depends on recognising an
 unlabelled glyph. Channels with no mark at all show just the name.
 
-That list is judged by eye, not by metadata: Max, for instance, ships an abstract glyph
+That list is judged by eye, not by metadata: HBO Max, for instance, ships an abstract glyph
 rather than its logotype, so its tile is labelled despite the icon nominally being the
 brand's mark.
 
@@ -225,8 +225,8 @@ asks users to seek the permissions their project needs. Using them to label a li
 service they belong to, in a private launcher, is ordinary identifying use.
 
 **With a mark:** Plex, YouTube, Netflix, Prime Video, Apple TV, Disney+, BBC iPlayer, ITVX,
-Channel 4, Channel 5, NOW, Paramount+, Crunchyroll, Max, Tubi, Hulu, CBC Gem, ZDF, RTL+,
-Virgin Media Player.
+Channel 4, Channel 5, NOW, Paramount+, Crunchyroll, HBO Max, Tubi, Hulu, CBC Gem, ZDF, RTL+,
+Virgin Media Play.
 
 **Name only:** Peacock, Pluto TV, Crave, RTÉ Player, and the Australian, French, Spanish,
 Italian, Dutch and German public broadcasters. `LOGO_DIR` below is the way to supply
@@ -235,7 +235,7 @@ these.
 Brand colours are used exactly as the pack ships them, except where a mark would be
 invisible on the dark background. Anything below 35% lightness is lifted in HSL so the hue
 survives — blending toward white turns saturated reds into pink. That affects three:
-**Apple TV** and **Max** (both defined as black or dark grey, lifted to silver) and **NOW**
+**Apple TV** and **HBO Max** (both defined as black or dark grey, lifted to silver) and **NOW**
 (a near-black teal, lifted to cyan). Hulu carries no colour in CoreUI Brands, so its tile
 uses the brand's green. Disney+, Prime Video and BBC iPlayer are white logotypes: their
 baked-in fill is stripped so they take the tile tint like every other mark.
