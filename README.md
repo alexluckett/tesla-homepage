@@ -152,9 +152,11 @@ Point `LOGO_DIR` at a folder, near the top of the `<script>` block:
 var LOGO_DIR = "logos";
 ```
 
-Each tile loads `<LOGO_DIR>/<channel id>.svg` and swaps it in once it decodes; anything
-missing or broken keeps whatever the tile already had, so a partial set is fine — this is
-the cleanest way to fill in the name-only channels above. An `<img>` cannot be recoloured
+Each tile loads `<LOGO_DIR>/<channel id>.svg` and swaps it in once it decodes, replacing
+the whole lockup (mark and label both) so your logotype is not doubled up with the built-in
+name. Anything missing or broken keeps whatever the tile already had, so a partial set is
+fine — this is the cleanest way to fill in the name-only channels above. `logos/README.md`
+lists every channel id and the four with no mark at all. An `<img>` cannot be recoloured
 by CSS, so bake the colour into the file and use light-on-dark variants. Keep them local
 rather than hotlinking a CDN: a remote logo is a third-party request from your car on every
 load.

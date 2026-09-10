@@ -330,8 +330,10 @@ body{
     img.alt = "";
     img.decoding = "async";
     img.addEventListener("load", function () {
-      var existing = tile.querySelector(".glyph, .wordmark");
-      if (existing) existing.hidden = true;
+      // A lockup holds both a mark and a label; a supplied logo replaces the
+      // whole thing, so hide every one of them, not just the first.
+      var existing = tile.querySelectorAll(".glyph, .wordmark");
+      for (var i = 0; i < existing.length; i++) existing[i].hidden = true;
     });
     img.addEventListener("error", function () { img.remove(); });
     img.src = LOGO_DIR.replace(/\/+$/, "") + "/" + id + ".svg";
