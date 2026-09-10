@@ -43,8 +43,10 @@ are kept: the button is always there, the long press saves reaching for it.
 In edit mode a card does two things:
 
 - **Tap** to show or hide it.
-- **Drag** it to reorder. Order is stored per country, like hidden channels, and a channel
-  added in a later release falls to the end rather than disappearing.
+- **Drag** it to reorder. The card leaves the grid and follows your finger, a dashed slot
+  shows where it will land, and the others slide aside to open that gap. Order is stored
+  per country, like hidden channels, and a channel added in a later release falls to the
+  end rather than disappearing.
 
 A gesture is read as a drag once the pointer moves more than 8px, so a slightly imprecise
 tap still toggles rather than shuffling the grid.
@@ -263,8 +265,17 @@ Virgin Media Play.
 Italian, Dutch and German public broadcasters. `LOGO_DIR` below is the way to supply
 these.
 
-Brand colours are used exactly as the pack ships them, except where a mark would be
-invisible on the dark background. Anything below 35% lightness is lifted in HSL so the hue
+Each card has two colours: the mark's own, and the glow behind it. They are usually the
+same, but a white logotype would otherwise leave the card colourless, so **Prime Video**
+and **Disney+** keep white marks over a light blue and a dark blue glow. **BBC iPlayer** is
+pink and **Channel 5** yellow, in both.
+
+Channel 5 rebranded to a yellow `5` in March 2025; no exact hex is published in any source
+reachable from here, so the yellow is chosen to read on the dark ground rather than
+matched. The bundled mark is the older segmented numeral, not the 2025 one.
+
+Brand colours are otherwise used exactly as the pack ships them, except where a mark would
+be invisible on the dark background. Anything below 35% lightness is lifted in HSL so the hue
 survives — blending toward white turns saturated reds into pink. That affects three:
 **Apple TV** and **HBO Max** (both defined as black or dark grey, lifted to silver) and **NOW**
 (a near-black teal, lifted to cyan). Hulu carries no colour in CoreUI Brands, so its tile
