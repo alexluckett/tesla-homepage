@@ -69,6 +69,9 @@ you in the full-screen view with Front Row already in it. Nothing to hand-encode
 The bounce is skipped when `fs=0` is set, so `?fs=0` remains a complete opt-out: no
 bootstrap and no redirect on the channels either.
 
+The bounce is also skipped when the page is running inside a frame, where navigating the
+whole window out to YouTube is never what is wanted.
+
 **Loop safety.** An unguarded version of this is an infinite redirect in a moving car, so
 there are two independent guards and either alone is enough to stop it:
 

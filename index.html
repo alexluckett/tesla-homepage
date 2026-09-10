@@ -382,6 +382,7 @@ body{
   //   2. a timestamp, in case anything strips that parameter.
   // Either one alone stops the loop; both have to fail to get a cycle.
   function bootstrapFullScreen() {
+    if (window.top !== window.self) return false;  // framed: never bootstrap out
     if (!fullscreen) return false;                 // ?fs=0 opts out entirely
     if (params.get("boot") === "1") return false;  // this is the return trip
     var last = Number(load(STORE_BOOT, 0)) || 0;
