@@ -68,6 +68,34 @@ Only the services that genuinely have per-country URLs:
 Each tile prints its resolved host, so you can see exactly where a button goes before
 you tap it.
 
+## Logos
+
+The tiles ship with a **typographic channel mark** — each service name set in its brand
+colour, with weight and tracking doing the identifying work. No brand artwork is bundled,
+so there is nothing to keep licensed or up to date, and the page makes zero image
+requests.
+
+To use real logos instead, drop SVG files into a folder named after the service ids and
+point `LOGO_DIR` at it, near the top of the `<script>` block:
+
+```js
+var LOGO_DIR = "logos";
+```
+
+```
+logos/plex.svg
+logos/youtube.svg
+logos/appletv.svg
+logos/prime.svg
+logos/netflix.svg
+```
+
+Each tile loads `<LOGO_DIR>/<service id>.svg` and swaps it in once it decodes; anything
+missing or broken falls back to the typographic mark, so a partial set is fine. Keep them
+local rather than hotlinking a CDN — a remote logo is a third-party request from your car
+on every page load. Most of these services publish an official brand-asset page; use
+their light-on-dark variants, since the tiles are dark.
+
 ## Adding a region or a service
 
 Both live in the `<script>` block at the bottom of `index.html`:
@@ -78,13 +106,16 @@ Both live in the `<script>` block at the bottom of `index.html`:
   `<a class="tile" data-service="...">` to the deck. Set `native: true` for anything that
   should skip the YouTube bounce.
 
-The deck grid is 3 columns with Plex spanning 2, which fills exactly at 3, 2 and 1
-columns. If you add a sixth service, drop the `tile--wide` class from Plex so the grid
-still fills.
+The deck is a single row of five equal tiles on any screen wide enough to hold them —
+which is every car screen — and one equal column below 860px. Both layouts fill exactly,
+so no tile is left stranded on a row of its own. If you change the number of services,
+update `grid-template-columns: repeat(5, 1fr)` in `.deck` to match, and give the new
+channel a `data-voice` rule so it gets its own typographic treatment.
 
 ## Design
 
-Dark-only by intent — this runs on a car screen, often at night, where a light theme is a
+Equal-sized channel tiles in one rack, the way a TV platform lists its apps. Dark-only by
+intent — this runs on a car screen, often at night, where a light theme is a
 headlight in the face. The interface chrome is warm monochrome and the only colour on the
 page comes from the five service tints, so the tiles read at a glance while driving up to
 a charger.

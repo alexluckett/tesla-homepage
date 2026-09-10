@@ -6,7 +6,7 @@
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#100E0C">
-<meta name="description" content="A full-screen streaming launcher for the Tesla browser. Big touch targets, country-aware links, no cookies.">
+<meta name="description" content="A full-screen streaming launcher for the Tesla browser. Equal-sized channel tiles, region-aware links, no cookies.">
 <title>Front Row</title>
 <style>
 /* ---- Tokens -------------------------------------------------------------
@@ -21,7 +21,7 @@
   --house:#F5EFE6;      /* house lights - primary ink */
   --dim:#9C9186;        /* secondary ink */
   --pad:clamp(16px, 3vw, 40px);
-  --gap:clamp(10px, 1.4vw, 16px);
+  --gap:clamp(10px, 1.2vw, 16px);
   --sans:-apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
   --mono:ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 }
@@ -44,18 +44,20 @@ body{
   padding-block:clamp(18px, 2.6vh, 34px) clamp(24px, 4vh, 48px);
   display:flex;
   flex-direction:column;
-  gap:clamp(18px, 2.6vh, 30px);
+  gap:clamp(16px, 2.4vh, 28px);
 }
 
 /* ---- Masthead ---------------------------------------------------------- */
 .masthead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
 .mark{display:flex;flex-direction:column;gap:6px}
 .eyebrow{
+  margin:0;
   font-family:var(--mono);
   font-size:11px;
   letter-spacing:.18em;
   text-transform:uppercase;
   color:var(--dim);
+  font-weight:400;
 }
 .eyebrow b{color:var(--house);font-weight:600}
 .wordmark{
@@ -72,7 +74,7 @@ body{
 .controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .picker{
   display:flex;flex-wrap:wrap;gap:6px;
-  padding:6px;
+  margin:0;padding:6px;
   border:1px solid var(--rail);
   border-radius:14px;
   background:var(--stage);
@@ -93,6 +95,7 @@ body{
 }
 .pill:hover{color:var(--house);background:var(--riser)}
 .pill[aria-pressed="true"]{background:var(--house);color:var(--pit)}
+.pill:focus-visible{outline:3px solid var(--house);outline-offset:2px}
 .toggle{
   display:flex;align-items:center;gap:10px;
   min-height:64px;
@@ -105,28 +108,39 @@ body{
   touch-action:manipulation;
 }
 .toggle:hover{background:var(--riser)}
+.toggle:focus-visible{outline:3px solid var(--house);outline-offset:2px}
 .toggle-label{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
 .lamp{
   width:12px;height:12px;border-radius:50%;
   background:var(--rail);
-  box-shadow:none;
   transition:background .12s ease, box-shadow .12s ease;
 }
 .toggle[aria-pressed="true"] .lamp{background:#7BD88F;box-shadow:0 0 10px rgba(123,216,143,.55)}
 .toggle[aria-pressed="true"] .toggle-label{color:var(--house)}
 
-/* ---- The deck ---------------------------------------------------------- */
+/* ---- Channel rack ------------------------------------------------------
+   One row of five equal tiles on any screen wide enough to hold them,
+   which is every car screen; a single equal column below that. Both
+   layouts fill exactly, so no tile is ever left stranded in a row.     */
+.rack{display:flex;flex-direction:column;gap:10px}
+.rack-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.rack-head h2{
+  margin:0;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--dim);font-weight:600;
+}
+.count{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);font-variant-numeric:tabular-nums}
 .deck{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(5,1fr);
   gap:var(--gap);
 }
 .tile{
   --tint:var(--house);
   position:relative;
-  display:flex;flex-direction:column;justify-content:space-between;gap:16px;
-  min-height:clamp(132px, 21vh, 190px);
-  padding:clamp(16px, 1.8vw, 24px);
+  display:flex;flex-direction:column;
+  min-height:clamp(150px, 24vh, 230px);
+  padding:clamp(14px, 1.4vw, 20px);
   border:1px solid var(--rail);
   border-radius:18px;
   background:var(--stage);
@@ -138,59 +152,70 @@ body{
 }
 .tile::after{
   content:"";
-  position:absolute;inset:auto -30% -60% -30%;
-  height:150%;
-  background:radial-gradient(60% 60% at 30% 100%, var(--tint) 0%, transparent 70%);
-  opacity:.10;
+  position:absolute;inset:-40% -30% auto -30%;
+  height:160%;
+  background:radial-gradient(52% 52% at 50% 38%, var(--tint) 0%, transparent 72%);
+  opacity:.13;
   pointer-events:none;
 }
 .tile:hover{background:var(--riser);border-color:var(--tint)}
 .tile:active{transform:scale(.985)}
 .tile:focus-visible{outline:3px solid var(--house);outline-offset:3px}
-.tile--wide{grid-column:span 2}
-.tag{
-  align-self:flex-start;
-  font-family:var(--mono);
-  font-size:13px;font-weight:700;letter-spacing:.14em;
+
+/* Logo slot: an <img> when a local file is configured, otherwise the
+   typographic channel mark below it. Never a third-party request.      */
+.art{
+  position:relative;
+  flex:1;
+  display:grid;place-items:center;
+  padding-block:6px 12px;
+  min-height:0;
+}
+.logo{max-width:82%;max-height:74px;object-fit:contain;display:block}
+.channel{
   color:var(--tint);
-  padding:5px 9px;
-  border:1px solid currentColor;
-  border-radius:7px;
-  opacity:.9;
-}
-.name{
-  font-size:clamp(22px, 2.9vw, 34px);
-  font-weight:800;
-  letter-spacing:.05em;
+  text-align:center;
+  text-wrap:balance;
+  line-height:1.02;
+  font-size:clamp(19px, 2.05vw, 30px);
   text-transform:uppercase;
-  line-height:1;
 }
-.tile--wide .name{font-size:clamp(26px, 3.6vw, 44px)}
+/* Each channel gets its own typographic voice rather than a copy of its
+   logo artwork - weight and tracking do the identifying work.          */
+.channel[data-voice="plex"]   {font-weight:800;letter-spacing:.26em;text-indent:.26em}
+.channel[data-voice="youtube"]{font-weight:800;letter-spacing:-.012em}
+.channel[data-voice="appletv"]{font-weight:400;letter-spacing:-.01em;text-transform:none;font-size:clamp(21px,2.25vw,33px)}
+.channel[data-voice="prime"]  {font-weight:700;letter-spacing:.02em}
+.channel[data-voice="netflix"]{font-weight:800;letter-spacing:.07em;text-indent:.07em}
+
+/* Stacked so the longest host - tv.apple.com/gb - still fits at any tile
+   width, and every tile shares the same two-line footer baseline.      */
 .route{
-  display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;
+  display:flex;flex-direction:column;flex-wrap:nowrap;align-items:center;gap:5px;
   font-family:var(--mono);
-  font-size:12px;
+  font-size:10.5px;
   letter-spacing:.04em;
   color:var(--dim);
   font-variant-numeric:tabular-nums;
+  min-width:0;
 }
 .route-kind{
   text-transform:uppercase;
-  letter-spacing:.14em;
-  font-size:10px;
+  letter-spacing:.13em;
+  font-size:9px;
   padding:3px 6px;
   border-radius:5px;
   background:var(--riser);
   color:var(--dim);
 }
-.route-host{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.route-host{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;color:var(--dim)}
 
 /* ---- Colophon ---------------------------------------------------------- */
 .colophon{
   display:grid;
   grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);
   gap:var(--gap) clamp(24px,4vw,56px);
-  padding-top:clamp(16px,2.4vh,26px);
+  padding-top:clamp(14px,2.2vh,24px);
   border-top:1px solid var(--rail);
 }
 .colophon h2{
@@ -220,13 +245,17 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
 .launch .arrow{font-family:var(--mono);color:var(--dim)}
 .note{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--dim);max-width:44ch}
 
-@media (max-width:900px){
-  .deck{grid-template-columns:repeat(2,1fr)}
-  .colophon{grid-template-columns:1fr}
+@media (max-width:1100px){
+  .channel{font-size:clamp(16px,1.95vw,24px)}
+  .channel[data-voice="plex"]{letter-spacing:.16em;text-indent:.16em}
 }
-@media (max-width:560px){
+@media (max-width:860px){
   .deck{grid-template-columns:1fr}
-  .tile--wide{grid-column:span 1}
+  .tile{min-height:112px}
+  .art{padding-block:4px 10px}
+  .channel{font-size:26px}
+  .channel[data-voice="appletv"]{font-size:28px}
+  .colophon{grid-template-columns:1fr}
   .masthead{align-items:flex-start}
 }
 @media (prefers-reduced-motion:reduce){
@@ -246,8 +275,7 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
     <div class="controls">
       <fieldset class="picker" id="picker">
         <legend>Region</legend>
-        <!-- buttons injected; markup below is the no-JS default -->
-        <button type="button" class="pill" aria-pressed="true">UK</button>
+        <button type="button" class="pill" value="uk" aria-pressed="true">UK</button>
       </fieldset>
 
       <button type="button" class="toggle" id="fsToggle" aria-pressed="true">
@@ -257,50 +285,52 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
     </div>
   </header>
 
-  <nav class="deck" id="deck" aria-label="Streaming services">
-    <a class="tile tile--wide" data-service="plex" style="--tint:#E5A00D"
-       href="https://www.youtube.com/redirect?q=https%3A%2F%2Fapp.plex.tv%2Fdesktop%2F">
-      <span class="tag">PX</span>
-      <span class="name">Plex</span>
-      <span class="route"><span class="route-kind">via youtube</span><span class="route-host">app.plex.tv</span></span>
-    </a>
+  <section class="rack">
+    <div class="rack-head">
+      <h2>Channels</h2>
+      <span class="count" id="count">5</span>
+    </div>
 
-    <a class="tile" data-service="youtube" style="--tint:#FF4133"
-       href="https://www.youtube.com/?persist_gl=1&amp;gl=GB">
-      <span class="tag">YT</span>
-      <span class="name">YouTube</span>
-      <span class="route"><span class="route-kind">direct</span><span class="route-host">youtube.com</span></span>
-    </a>
+    <nav class="deck" id="deck" aria-label="Channels">
+      <a class="tile" data-service="plex" style="--tint:#E5A00D"
+         href="https://www.youtube.com/redirect?q=https%3A%2F%2Fapp.plex.tv%2Fdesktop%2F">
+        <span class="art"><span class="channel" data-voice="plex">Plex</span></span>
+        <span class="route"><span class="route-kind">via youtube</span><span class="route-host">app.plex.tv</span></span>
+      </a>
 
-    <a class="tile" data-service="appletv" style="--tint:#D8D8E0"
-       href="https://www.youtube.com/redirect?q=https%3A%2F%2Ftv.apple.com%2Fgb">
-      <span class="tag">TV</span>
-      <span class="name">Apple TV</span>
-      <span class="route"><span class="route-kind">via youtube</span><span class="route-host">tv.apple.com/gb</span></span>
-    </a>
+      <a class="tile" data-service="youtube" style="--tint:#FF4133"
+         href="https://www.youtube.com/?persist_gl=1&amp;gl=GB">
+        <span class="art"><span class="channel" data-voice="youtube">YouTube</span></span>
+        <span class="route"><span class="route-kind">direct</span><span class="route-host">youtube.com</span></span>
+      </a>
 
-    <a class="tile" data-service="prime" style="--tint:#00A8E1"
-       href="https://www.youtube.com/redirect?q=https%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fvideo%2Fstorefront">
-      <span class="tag">PV</span>
-      <span class="name">Prime Video</span>
-      <span class="route"><span class="route-kind">via youtube</span><span class="route-host">amazon.co.uk</span></span>
-    </a>
+      <a class="tile" data-service="appletv" style="--tint:#E4E4EA"
+         href="https://www.youtube.com/redirect?q=https%3A%2F%2Ftv.apple.com%2Fgb">
+        <span class="art"><span class="channel" data-voice="appletv">Apple TV</span></span>
+        <span class="route"><span class="route-kind">via youtube</span><span class="route-host">tv.apple.com/gb</span></span>
+      </a>
 
-    <a class="tile" data-service="netflix" style="--tint:#E50914"
-       href="https://www.youtube.com/redirect?q=https%3A%2F%2Fwww.netflix.com%2Fbrowse">
-      <span class="tag">NF</span>
-      <span class="name">Netflix</span>
-      <span class="route"><span class="route-kind">via youtube</span><span class="route-host">netflix.com</span></span>
-    </a>
-  </nav>
+      <a class="tile" data-service="prime" style="--tint:#00A8E1"
+         href="https://www.youtube.com/redirect?q=https%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fvideo%2Fstorefront">
+        <span class="art"><span class="channel" data-voice="prime">Prime Video</span></span>
+        <span class="route"><span class="route-kind">via youtube</span><span class="route-host">amazon.co.uk</span></span>
+      </a>
+
+      <a class="tile" data-service="netflix" style="--tint:#E50914"
+         href="https://www.youtube.com/redirect?q=https%3A%2F%2Fwww.netflix.com%2Fbrowse">
+        <span class="art"><span class="channel" data-voice="netflix">Netflix</span></span>
+        <span class="route"><span class="route-kind">via youtube</span><span class="route-host">netflix.com</span></span>
+      </a>
+    </nav>
+  </section>
 
   <footer class="colophon">
     <div>
       <h2>How the full screen works</h2>
       <ol class="steps">
         <li><span class="n">01</span><span>Open the <b>YouTube</b> app once, then close it, so it is warm in memory.</span></li>
-        <li><span class="n">02</span><span>Every button here points at <code>youtube.com/redirect?q=…</code>, which hands the tap to the YouTube app — and that app draws over the whole screen.</span></li>
-        <li><span class="n">03</span><span>YouTube shows a <b>leaving YouTube</b> interstitial. Tap <b>Go to site</b> and the destination loads inside that full-screen view.</span></li>
+        <li><span class="n">02</span><span>Every channel here points at <code>youtube.com/redirect?q=…</code>, which hands the tap to the YouTube app — and that app draws over the whole screen.</span></li>
+        <li><span class="n">03</span><span>YouTube shows a <b>leaving YouTube</b> interstitial. Tap <b>Go to site</b> and the channel loads inside that full-screen view.</span></li>
         <li><span class="n">04</span><span>Video only plays in <b>Park</b>. YouTube is linked directly — it is already the full-screen app.</span></li>
       </ol>
     </div>
@@ -321,6 +351,12 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
   "use strict";
 
   var YT_REDIRECT = "https://www.youtube.com/redirect?q=";
+
+  // Drop your own logo files in and point this at their folder, e.g. "logos".
+  // Each tile then loads "<LOGO_DIR>/<service id>.svg" and falls back to the
+  // typographic channel mark if that file is missing. Empty = no image
+  // requests at all, which is the default so the page stays self-contained.
+  var LOGO_DIR = "";
 
   // Region tables. Only values that genuinely differ per country are listed:
   // Apple TV is path-scoped, Prime Video uses the local Amazon storefront,
@@ -344,15 +380,20 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
   var SERVICES = {
     // native: the Tesla browser already hands youtube.com to the full-screen
     // app, so wrapping it in its own redirect would only add an interstitial.
-    plex:    { native: false, url: function () { return "https://app.plex.tv/desktop/"; },
+    plex:    { name: "Plex", native: false,
+               url: function () { return "https://app.plex.tv/desktop/"; },
                host: function () { return "app.plex.tv"; } },
-    youtube: { native: true,  url: function (c) { return "https://www.youtube.com/?persist_gl=1&gl=" + c.yt; },
+    youtube: { name: "YouTube", native: true,
+               url: function (c) { return "https://www.youtube.com/?persist_gl=1&gl=" + c.yt; },
                host: function () { return "youtube.com"; } },
-    appletv: { native: false, url: function (c) { return "https://tv.apple.com/" + c.apple; },
+    appletv: { name: "Apple TV", native: false,
+               url: function (c) { return "https://tv.apple.com/" + c.apple; },
                host: function (c) { return "tv.apple.com/" + c.apple; } },
-    prime:   { native: false, url: function (c) { return "https://" + c.amazon + "/gp/video/storefront"; },
+    prime:   { name: "Prime Video", native: false,
+               url: function (c) { return "https://" + c.amazon + "/gp/video/storefront"; },
                host: function (c) { return c.amazon.replace(/^www\./, ""); } },
-    netflix: { native: false, url: function () { return "https://www.netflix.com/browse"; },
+    netflix: { name: "Netflix", native: false,
+               url: function () { return "https://www.netflix.com/browse"; },
                host: function () { return "netflix.com"; } }
   };
 
@@ -374,20 +415,38 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
   var picker = document.getElementById("picker");
   var fsToggle = document.getElementById("fsToggle");
   var selfLaunch = document.getElementById("selfLaunch");
+  var tiles = deck.querySelectorAll(".tile");
 
-  function wrap(url) {
-    return fullscreen ? YT_REDIRECT + encodeURIComponent(url) : url;
+  document.getElementById("count").textContent = String(tiles.length);
+
+  function mountLogos() {
+    if (!LOGO_DIR) return;
+    for (var i = 0; i < tiles.length; i++) {
+      (function (tile) {
+        var id = tile.getAttribute("data-service");
+        var svc = SERVICES[id];
+        if (!svc) return;
+        var mark = tile.querySelector(".channel");
+        var img = document.createElement("img");
+        img.className = "logo";
+        img.alt = svc.name;
+        img.decoding = "async";
+        img.addEventListener("load", function () { mark.hidden = true; });
+        img.addEventListener("error", function () { img.remove(); mark.hidden = false; });
+        img.src = LOGO_DIR.replace(/\/+$/, "") + "/" + id + ".svg";
+        tile.querySelector(".art").appendChild(img);
+      })(tiles[i]);
+    }
   }
 
   function render() {
-    var tiles = deck.querySelectorAll(".tile");
     for (var i = 0; i < tiles.length; i++) {
       var tile = tiles[i];
       var svc = SERVICES[tile.getAttribute("data-service")];
       if (!svc) continue;
       var target = svc.url(country);
       var viaYouTube = fullscreen && !svc.native;
-      tile.href = viaYouTube ? wrap(target) : target;
+      tile.href = viaYouTube ? YT_REDIRECT + encodeURIComponent(target) : target;
       tile.querySelector(".route-kind").textContent = viaYouTube ? "via youtube" : "direct";
       tile.querySelector(".route-host").textContent = svc.host(country);
     }
@@ -416,7 +475,7 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
   }
 
   // Build the region picker from the table so the two never drift apart.
-  picker.innerHTML = '<legend>Region</legend>';
+  picker.innerHTML = "<legend>Region</legend>";
   COUNTRIES.forEach(function (c) {
     var b = document.createElement("button");
     b.type = "button";
@@ -439,6 +498,7 @@ code{font-family:var(--mono);font-size:.92em;color:var(--house);word-break:break
     render();
   });
 
+  mountLogos();
   syncUrl();
   render();
 })();
