@@ -190,6 +190,7 @@ body{
   <span class="region">
     <select id="region" class="ctl" aria-label="Country"></select>
   </span>
+  <button type="button" id="boot" class="ctl" hidden>Full screen</button>
   <button type="button" id="edit" class="ctl" aria-pressed="false">Edit</button>
 </div>
 
@@ -203,6 +204,7 @@ body{
   var YT_REDIRECT = "https://www.youtube.com/redirect?q=";
   var STORE_MARKET = "frontrow.market";
   var STORE_HIDDEN = "frontrow.hidden";
+  var STORE_BOOT = "frontrow.boot";
 
   // Point this at a folder of your own SVGs to override the built-in marks.
   // Each tile loads "<LOGO_DIR>/<channel id>.svg" and keeps what it already
@@ -218,6 +220,7 @@ body{
   var deck = document.getElementById("deck");
   var select = document.getElementById("region");
   var editBtn = document.getElementById("edit");
+  var bootBtn = document.getElementById("boot");
 
   // Storage can be unavailable (private mode, blocked site data) and throws on
   // access in some contexts, so every touch is guarded and the app still runs.
@@ -369,11 +372,34 @@ body{
     }
   }
 
+  // Bootstrap the launcher itself into the full-screen view: bounce once
+  // through the YouTube redirect back to this same page, marked so the
+  // return trip does not bounce again.
+  //
+  // Two independent guards, because an unguarded version of this is a
+  // redirect loop in a moving car:
+  //   1. the "boot" parameter carried through the redirect, and
+  //   2. a timestamp, in case anything strips that parameter.
+  // Either one alone stops the loop; both have to fail to get a cycle.
+  function bootstrapFullScreen() {
+    if (!fullscreen) return false;                 // ?fs=0 opts out entirely
+    if (params.get("boot") === "1") return false;  // this is the return trip
+    var last = Number(load(STORE_BOOT, 0)) || 0;
+    if (Date.now() - last < 30000) return false;   // just tried; do not retry
+    save(STORE_BOOT, Date.now());
+
+    var here = new URL(window.location.href);
+    here.searchParams.set("boot", "1");
+    window.location.replace(YT_REDIRECT + encodeURIComponent(here.toString()));
+    return true;
+  }
+
   function syncUrl() {
     // Sandboxed frames and some file:// contexts refuse replaceState. The
     // choice is already saved and applied, so this is not worth throwing over.
     try {
       var next = new URL(window.location.href);
+      next.searchParams.delete("boot");
       next.searchParams.set("c", market.c);
       if (fullscreen) { next.searchParams.delete("fs"); } else { next.searchParams.set("fs", "0"); }
       window.history.replaceState(null, "", next.toString());
@@ -426,6 +452,20 @@ body{
   });
 
   save(STORE_MARKET, market.c);
+
+  // A script-initiated navigation may not be enough to hand the page to the
+  // YouTube app - some engines only do that on a real user gesture. If we are
+  // still here shortly after trying, offer a button that does it on a tap.
+  if (bootstrapFullScreen()) {
+    window.setTimeout(function () { bootBtn.hidden = false; }, 1500);
+  }
+
+  bootBtn.addEventListener("click", function () {
+    var here = new URL(window.location.href);
+    here.searchParams.set("boot", "1");
+    window.location.href = YT_REDIRECT + encodeURIComponent(here.toString());
+  });
+
   syncUrl();
   render();
 })();

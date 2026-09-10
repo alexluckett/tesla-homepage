@@ -62,23 +62,32 @@ firmware that has closed the trick, not an everyday setting.
 
 ### Running the launcher itself full screen
 
-The redirect works on any URL, including this one. Point it at your own deployment and
-bookmark that, rather than bookmarking the page directly:
+The launcher bootstraps itself. Bookmark your deployment's plain URL; on load the page
+bounces once through the YouTube redirect back to itself, so tapping **Go to site** lands
+you in the full-screen view with Front Row already in it. Nothing to hand-encode.
 
-```
-https://www.youtube.com/redirect?q=<url-encoded launcher URL>
-```
+The bounce is skipped when `fs=0` is set, so `?fs=0` remains a complete opt-out: no
+bootstrap and no redirect on the channels either.
 
-Tap **Go to site** once and Front Row loads inside the full-screen view. Worth pairing
-with `fs=0` so channels then open by direct link instead of bouncing through YouTube a
-second time — one interstitial when you open the launcher rather than one per channel:
+**Loop safety.** An unguarded version of this is an infinite redirect in a moving car, so
+there are two independent guards and either alone is enough to stop it:
 
-```
-https://www.youtube.com/redirect?q=https%3A%2F%2Ffrontrow.example.com%2F%3Fc%3Duk%26fs%3D0
-```
+1. the `boot=1` parameter carried through the redirect and checked on return, and
+2. a timestamp in `localStorage`, which suppresses a second attempt within 30 seconds
+   even if that parameter is lost.
 
-That pairing assumes the full-screen view survives a same-window navigation, which has not
-been confirmed on a car. If a channel drops back to a windowed browser, drop `&fs=0`.
+Both would have to fail simultaneously to get a cycle. This is verified: with the
+parameter stripped entirely, six consecutive reloads produce exactly one bounce.
+
+`boot=1` is removed from the address bar on arrival, so bookmarking the page as it sits
+still bootstraps next time.
+
+**If the bounce does not fire.** Handing a page to the YouTube app may require a real user
+gesture; a script-initiated navigation might simply be ignored. If the page is still here
+1.5 seconds after trying, a **Full screen** button appears in the bar that does the same
+thing on a tap. It stays hidden when the bootstrap works, and is not shown on the return
+trip. Whether the automatic version works at all is unconfirmed — it cannot be tested
+outside a car.
 
 The browser's Fullscreen API is not a substitute: it fills the browser's viewport, and the
 Tesla browser is itself a window in the car's UI, so it cannot escape that container the
