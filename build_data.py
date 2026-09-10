@@ -23,7 +23,7 @@ S = {
  'rteplayer':   ('RTE Player',           None,           'https://www.rte.ie/player/'),
  'vmplayer':    ('Virgin Media Player', 'virginmedia',   'https://www.virginmediaplayer.ie/'),
  # United States
- 'hulu':        ('Hulu',                 None,           'https://www.hulu.com/'),
+ 'hulu':        ('Hulu',                'cib:hulu',      'https://www.hulu.com/'),
  'max':         ('Max',                 'max',           'https://www.max.com/'),
  'peacock':     ('Peacock',              None,           'https://www.peacocktv.com/'),
  'tubi':        ('Tubi',                'tubi',          'https://tubitv.com/'),
@@ -87,7 +87,7 @@ MARKETS = [
 # Icons whose artwork already spells the service name. Everything else is a
 # symbol, and its tile pairs the mark with the name so no channel depends on
 # recognising an unlabelled glyph.
-SELF_NAMING = {'plex','appletv','itvx','now','nowit','max','tubi','zdf'}
+SELF_NAMING = {'plex','appletv','itvx','now','nowit','tubi','zdf'}
 
 services = {}
 for sid,(name,slug,url) in S.items():

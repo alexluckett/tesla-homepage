@@ -105,9 +105,13 @@ storefront domain.
 ## Logos
 
 Every tile shows the service's name, one way or another. Where the artwork already spells
-it out — Plex, Apple TV, ITVX, NOW, Max, Tubi, ZDF — the mark stands alone. Where the mark
-is a symbol, the tile pairs it with the name as a lockup, so nothing depends on
-recognising an unlabelled glyph. Channels with no mark at all show just the name.
+it out — Plex, Apple TV, ITVX, NOW, Tubi, ZDF — the mark stands alone. Where the mark is a
+symbol, the tile pairs it with the name as a lockup, so nothing depends on recognising an
+unlabelled glyph. Channels with no mark at all show just the name.
+
+That list is judged by eye, not by metadata: Max, for instance, ships an abstract glyph
+rather than its logotype, so its tile is labelled despite the icon nominally being the
+brand's mark.
 
 Note that Simple Icons is an *icon* set, not a logotype set: its marks are monochrome
 24x24 glyphs, so a proper brand lockup is assembled here rather than supplied. No open
@@ -115,25 +119,30 @@ pack covering these brands' logotypes was available — in particular the nation
 broadcasters, which developer-oriented logo collections do not carry. `LOGO_DIR` below is
 the way to use real logotype artwork.
 
-Marks come from **[Simple Icons](https://github.com/simple-icons/simple-icons)** v16.30.0,
-whose repository is released under **CC0-1.0**, inlined as SVG paths so they cost no extra
-requests. The logos themselves remain the trademarks of their respective owners; Simple
+Marks come from two **CC0-1.0** sets, inlined as SVG paths so they cost no extra requests:
+**[Simple Icons](https://github.com/simple-icons/simple-icons)** v16.30.0 for most of them,
+and **[CoreUI Brands](https://github.com/coreui/coreui-icons)** for Hulu. The two use
+different grids, so each mark carries its own `vb` (viewBox) where it is not the 24x24
+default. The logos themselves remain the trademarks of their respective owners; Simple
 Icons' [disclaimer](https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md)
 asks users to seek the permissions their project needs. Using them to label a link to the
 service they belong to, in a private launcher, is ordinary identifying use.
 
 **With a mark:** Plex, YouTube, Netflix, Apple TV, ITVX, Channel 4, NOW, Paramount+,
-Crunchyroll, Max, Tubi, CBC Gem, ZDF, RTL+, Virgin Media Player.
+Crunchyroll, Max, Tubi, Hulu, CBC Gem, ZDF, RTL+, Virgin Media Player.
 
-**Name only** (not in the pack): Prime Video, Disney+, BBC iPlayer, Channel 5, Hulu,
+**Name only** (in none of the sets searched): Prime Video, Disney+, BBC iPlayer, Channel 5,
 Peacock, Pluto TV, Crave, RTÉ Player, and the Australian, French, Spanish, Italian, Dutch
-and German public broadcasters.
+and German public broadcasters. Simple Icons, CoreUI Brands and the gilbarbara `logos` set
+were all checked — roughly 3,000 icons — and broadcaster logotypes are simply not what
+developer icon sets carry. `LOGO_DIR` below is the way to supply them.
 
 Brand colours are used exactly as the pack ships them, except where a mark would be
 invisible on the dark background. Anything below 35% lightness is lifted in HSL so the hue
 survives — blending toward white turns saturated reds into pink. That affects three:
 **Apple TV** and **Max** (both defined as black or dark grey, lifted to silver) and **NOW**
-(a near-black teal, lifted to cyan).
+(a near-black teal, lifted to cyan). Hulu carries no colour in CoreUI Brands, so its tile
+uses the brand's green.
 
 ### Using your own artwork instead
 
