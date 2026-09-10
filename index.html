@@ -42,14 +42,28 @@ body{
 
 /* ---- Chrome: a quiet name, and the two controls ------------------------ */
 .bar{
+  position:sticky;
+  top:0;
+  z-index:3;
   display:flex;align-items:center;gap:10px;
   width:100%;
   max-width:var(--shell);
   margin-inline:auto;
   padding:clamp(12px,1.8vh,20px) var(--pad);
+  background:var(--pit);
+}
+/* The bar is capped to --shell, so on a wider window the grid would scroll
+   past it through the gutters. This covers the full width behind it. */
+.bar::before{
+  content:"";
+  position:absolute;
+  inset:0 calc((100vw - 100%) / -2);
+  background:var(--pit);
+  z-index:-1;
 }
 .brand{
-  flex:1;min-width:0;
+  margin-inline-end:auto;
+  min-width:0;
   font-size:12px;font-weight:700;
   letter-spacing:.24em;text-indent:.24em;text-transform:uppercase;
   color:var(--dim);
@@ -97,7 +111,7 @@ body{
 .deck{
   flex:1;
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
   /* Cards this size overflow a car screen, so the grid starts at the top and
      scrolls rather than centring and clipping its first row. */
   align-content:start;
