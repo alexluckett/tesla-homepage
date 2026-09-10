@@ -8,7 +8,7 @@ S = {
  'plex':        ('Plex',                'plex',          'https://app.plex.tv/desktop/'),
  'youtube':     ('YouTube',             'youtube',       None),
  'netflix':     ('Netflix',             'netflix',       'https://www.netflix.com/browse'),
- 'prime':       ('Prime Video',          None,           'https://www.primevideo.com/'),
+ 'prime':       ('Prime Video',          None,           None),
  'appletv':     ('Apple TV',            'appletv',       None),
  'disneyplus':  ('Disney+',              None,           'https://www.disneyplus.com/'),
  'paramountplus':('Paramount+',         'paramountplus', 'https://www.paramountplus.com/'),
@@ -65,6 +65,9 @@ S = {
 
 # Markets without a working Amazon storefront path open primevideo.com, which is the
 # site Amazon's own Prime Video provider page names for most of them.
+AMAZON = {'uk':'www.amazon.co.uk','ie':None,'us':'www.amazon.com','ca':None,
+          'au':None,'de':'www.amazon.de','fr':None,
+          'es':None,'it':None,'nl':None}
 APPLE = {'uk':'gb','ie':'ie','us':'us','ca':'ca','au':'au','de':'de','fr':'fr',
          'es':'es','it':'it','nl':'nl'}
 YT = {k:(v.upper() if k!='uk' else 'GB') for k,v in APPLE.items()}
@@ -99,6 +102,9 @@ for sid,(name,slug,url) in S.items():
     if sid == 'youtube':
         e['u'] = {m: 'https://www.youtube.com/?persist_gl=1&gl=' + YT[m] for m,_,_,_ in MARKETS}
         e['native'] = True
+    elif sid == 'prime':
+        e['u'] = {m: ('https://%s/gp/video/storefront' % AMAZON[m]) if AMAZON[m]
+                     else 'https://www.primevideo.com/' for m,_,_,_ in MARKETS}
     elif sid == 'appletv':
         e['u'] = {m: 'https://tv.apple.com/' + APPLE[m] for m,_,_,_ in MARKETS}
     else:

@@ -186,24 +186,25 @@ Only where the service genuinely differs by market:
 
 | Channel | Regional? | Target |
 | --- | --- | --- |
-| Prime Video | No — account-scoped | `primevideo.com` |
+| Prime Video | Yes — local storefront | `amazon.co.uk` / `.com` / `.de` `/gp/video/storefront`, else `primevideo.com` |
 | Apple TV | Yes — path-scoped | `tv.apple.com/<cc>` |
 | YouTube | Locale only | `youtube.com/?persist_gl=1&gl=<CC>` |
 | Netflix, Disney+, Paramount+, Crunchyroll | No — account-scoped | Single global domain |
 | National broadcasters | Inherently | Their own domain, listed once per market |
 
-Prime Video opens `primevideo.com` in every market. It previously used each market's Amazon
-storefront where one existed — the UK, US and Germany — but that path is the *retail* site's
-video section, and it arrives wrapped in the full Amazon header, basket, department menu and
-a search box covering everything Amazon sells. `primevideo.com` is the standalone,
-app-style interface, and it is what Amazon's
-[Prime Video provider page](https://www.primevideo.com/help?nodeId=202064890) names for
-Ireland, Australia, France, Spain, Italy and the Netherlands in any case. Canada is listed
-there as `amazon.ca`, whose storefront path returns 404.
+Only the UK, US and German Amazon sites serve a Prime Video storefront at that path.
 
-Nothing regional is lost by dropping the Amazon domains: they looked like geo-routing, but
-Prime Video is account-scoped like Netflix and Disney+, so the account decides the catalogue
-either way.
+**Do not "simplify" these three to `primevideo.com`.** It looks like the tidier choice —
+`primevideo.com` is the standalone app-style interface, while the storefront path is the
+retail site's video section and carries the whole Amazon header, basket and product search.
+But in a market whose account is served through the Amazon domain, `primevideo.com` refuses
+to play and sends you to that domain anyway, so you land on the retail UI having taken an
+extra hop to get there. This was tried on a UK account in September 2026 and reverted.
+
+Every other market opens `primevideo.com`, which is the site Amazon's
+[Prime Video provider page](https://www.primevideo.com/help?nodeId=202064890) names for
+Ireland, Australia, France, Spain, Italy and the Netherlands. Canada is listed there as
+`amazon.ca`, but its storefront path returns 404, so it opens `primevideo.com` too.
 
 Every URL was checked in September 2026 against the service's official website on
 Wikidata (or Amazon's provider page), the organisation on its TLS certificate, and its
