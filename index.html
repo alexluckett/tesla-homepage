@@ -74,9 +74,8 @@ body{
 .region{position:relative;display:flex}
 .region select{
   appearance:none;-webkit-appearance:none;
-  padding:0 32px 0 16px;
-  font-size:21px;
-  letter-spacing:normal;
+  padding:0 34px 0 16px;
+  font-size:15px;
   line-height:1;
 }
 .region option{background:var(--stage);color:var(--house);text-transform:none;letter-spacing:normal}
@@ -474,8 +473,7 @@ body{
   MARKETS.forEach(function (m) {
     var o = document.createElement("option");
     o.value = m.c;
-    o.textContent = m.f;
-    o.title = m.n;
+    o.textContent = m.f + " " + m.n;
     select.appendChild(o);
   });
 
