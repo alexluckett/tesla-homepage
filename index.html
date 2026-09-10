@@ -379,6 +379,23 @@ body{
     }
   }
 
+  // A refresh is not a fresh arrival. Because boot=1 is stripped from the
+  // address bar on arrival, a reload would otherwise look identical to a cold
+  // open and bounce again. Going back should not re-bounce either.
+  function isRevisit() {
+    try {
+      var entries = window.performance && window.performance.getEntriesByType
+        ? window.performance.getEntriesByType("navigation") : null;
+      if (entries && entries.length && entries[0].type) {
+        return entries[0].type === "reload" || entries[0].type === "back_forward";
+      }
+      // Deprecated, but it is what older engines have.
+      var nav = window.performance && window.performance.navigation;
+      if (nav) return nav.type === 1 || nav.type === 2;
+    } catch (e) { /* fall through */ }
+    return false;
+  }
+
   // Bootstrap the launcher itself into the full-screen view: bounce once
   // through the YouTube redirect back to this same page, marked so the
   // return trip does not bounce again.
@@ -390,6 +407,7 @@ body{
   // Either one alone stops the loop; both have to fail to get a cycle.
   function bootstrapFullScreen() {
     if (window.top !== window.self) return false;  // framed: never bootstrap out
+    if (isRevisit()) return false;                 // a refresh or a back nav
     if (!fullscreen) return false;                 // ?fs=0 opts out entirely
     if (params.get("boot") === "1") return false;  // this is the return trip
     var last = Number(load(STORE_BOOT, 0)) || 0;

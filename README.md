@@ -72,6 +72,11 @@ bootstrap and no redirect on the channels either.
 The bounce is also skipped when the page is running inside a frame, where navigating the
 whole window out to YouTube is never what is wanted.
 
+A refresh does not re-bounce, and nor does going back. Because `boot=1` is stripped from
+the address bar on arrival, a reload would otherwise be indistinguishable from a cold open;
+the page checks the Navigation Timing entry's `type` instead, so only a genuine navigation
+bootstraps.
+
 **Loop safety.** An unguarded version of this is an infinite redirect in a moving car, so
 there are two independent guards and either alone is enough to stop it:
 
