@@ -281,7 +281,13 @@ body{
     a.className = "tile" + (off ? " off" : "");
     a.setAttribute("data-channel", id);
     if (svc.t) a.style.setProperty("--tint", svc.t);
-    a.href = (fullscreen && !svc.native) ? YT_REDIRECT + encodeURIComponent(url) : url;
+    if (editing) {
+      a.setAttribute("role", "button");
+      a.setAttribute("tabindex", "0");
+      a.setAttribute("aria-pressed", String(!off));
+    } else {
+      a.href = (fullscreen && !svc.native) ? YT_REDIRECT + encodeURIComponent(url) : url;
+    }
 
     if (svc.p) {
       var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -315,10 +321,6 @@ body{
     badge.textContent = off ? "+" : "✓";
     a.appendChild(badge);
 
-    if (editing) {
-      a.setAttribute("role", "button");
-      a.setAttribute("aria-pressed", String(!off));
-    }
     return a;
   }
 
@@ -392,13 +394,29 @@ body{
     render();
   });
 
-  deck.addEventListener("click", function (ev) {
+  function tileFrom(node) {
+    // Not every engine puts closest() on SVG elements, so walk up by hand.
+    while (node && node !== deck) {
+      if (node.classList && node.classList.contains("tile")) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  function handleToggle(ev) {
     if (!editing) return;
-    var tile = ev.target.closest ? ev.target.closest(".tile") : null;
+    var tile = tileFrom(ev.target);
     if (!tile) return;
     ev.preventDefault();
     toggle(tile.getAttribute("data-channel"));
     render();
+  }
+
+  deck.addEventListener("click", handleToggle);
+  deck.addEventListener("keydown", function (ev) {
+    if (!editing) return;
+    if (ev.key !== "Enter" && ev.key !== " " && ev.key !== "Spacebar") return;
+    handleToggle(ev);
   });
 
   save(STORE_MARKET, market.c);
