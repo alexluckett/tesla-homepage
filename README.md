@@ -104,7 +104,16 @@ storefront domain.
 
 ## Logos
 
-The logo is the button. A channel's name is only drawn when no mark is available for it.
+Every tile shows the service's name, one way or another. Where the artwork already spells
+it out — Plex, Apple TV, ITVX, NOW, Max, Tubi, ZDF — the mark stands alone. Where the mark
+is a symbol, the tile pairs it with the name as a lockup, so nothing depends on
+recognising an unlabelled glyph. Channels with no mark at all show just the name.
+
+Note that Simple Icons is an *icon* set, not a logotype set: its marks are monochrome
+24x24 glyphs, so a proper brand lockup is assembled here rather than supplied. No open
+pack covering these brands' logotypes was available — in particular the national
+broadcasters, which developer-oriented logo collections do not carry. `LOGO_DIR` below is
+the way to use real logotype artwork.
 
 Marks come from **[Simple Icons](https://github.com/simple-icons/simple-icons)** v16.30.0,
 whose repository is released under **CC0-1.0**, inlined as SVG paths so they cost no extra

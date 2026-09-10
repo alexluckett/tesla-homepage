@@ -84,12 +84,19 @@ MARKETS = [
  ('nl','\U0001F1F3\U0001F1F1','Netherlands',    GLOBAL+['npo','videoland','crunchyroll']),
 ]
 
+# Icons whose artwork already spells the service name. Everything else is a
+# symbol, and its tile pairs the mark with the name so no channel depends on
+# recognising an unlabelled glyph.
+SELF_NAMING = {'plex','appletv','itvx','now','nowit','max','tubi','zdf'}
+
 services = {}
 for sid,(name,slug,url) in S.items():
     e = {'n': name}
     if slug:
         e['p'] = icons[slug]['path']
         e['t'] = icons[slug]['tint']
+        if sid in SELF_NAMING:
+            e['w'] = 1
     if sid == 'youtube':
         e['u'] = {m: 'https://www.youtube.com/?persist_gl=1&gl=' + YT[m] for m,_,_,_ in MARKETS}
         e['native'] = True
