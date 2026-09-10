@@ -153,20 +153,24 @@ Only where the service genuinely differs by market:
 
 | Channel | Regional? | Target |
 | --- | --- | --- |
-| Prime Video | Yes — local storefront | `amazon.co.uk` / `.de` / `.com.au` … `/gp/video/storefront` |
+| Prime Video | Yes — local storefront | `amazon.co.uk` / `.com` / `.de` `/gp/video/storefront`, else `primevideo.com` |
 | Apple TV | Yes — path-scoped | `tv.apple.com/<cc>` |
 | YouTube | Locale only | `youtube.com/?persist_gl=1&gl=<CC>` |
 | Netflix, Disney+, Paramount+, Crunchyroll | No — account-scoped | Single global domain |
 | National broadcasters | Inherently | Their own domain, listed once per market |
 
-Ireland is the exception on Prime Video: it uses `primevideo.com` rather than an Amazon
-storefront domain.
+Only the UK, US and German Amazon sites serve a Prime Video storefront at that path. Every
+other market opens `primevideo.com`, which is the site Amazon's
+[Prime Video provider page](https://www.primevideo.com/help?nodeId=202064890) names for
+Ireland, Australia, France, Spain, Italy and the Netherlands. Canada is listed there as
+`amazon.ca`, but its storefront path returns 404, so it opens `primevideo.com` too.
 
-> **Unverified.** The build environment had no outbound network access, so none of these
-> URLs could be checked live. Most are long-stable domains, but a few have had recent
-> rebrands and are worth confirming before you rely on them: **TF1+** (`tf1.fr`),
-> **M6+** (`6play.fr`), **NPO Start** (`npo.nl/start`), **Mitele** (`mitele.es`) and
-> **Mediaset Infinity**.
+Every URL was checked in September 2026 against the service's official website on
+Wikidata (or Amazon's provider page), the organisation on its TLS certificate, and its
+domain registration. Channels that have rebranded point at their current domain rather than
+the old one that redirects, so that a lapsed old domain can never be picked up by someone
+else: ITVX (`itv.com`), Max (`hbomax.com`), 10 play (`10.com.au`), M6+ (`m6.fr`), Mitele
+(`mediasetinfinity.es`) and Virgin Media Player (`play.virginmediatelevision.ie`).
 
 ## Logos
 

@@ -15,16 +15,16 @@ S = {
  'crunchyroll': ('Crunchyroll',         'crunchyroll',   'https://www.crunchyroll.com/'),
  # UK
  'iplayer':     ('BBC iPlayer',          None,           'https://www.bbc.co.uk/iplayer'),
- 'itvx':        ('ITVX',                'itvx',          'https://www.itvx.com/'),
+ 'itvx':        ('ITVX',                'itvx',          'https://www.itv.com/'),
  'channel4':    ('Channel 4',           'channel4',      'https://www.channel4.com/'),
  'channel5':    ('Channel 5',            None,           'https://www.channel5.com/'),
  'now':         ('NOW',                 'now',           'https://www.nowtv.com/'),
  # Ireland
  'rteplayer':   ('RTE Player',           None,           'https://www.rte.ie/player/'),
- 'vmplayer':    ('Virgin Media Player', 'virginmedia',   'https://www.virginmediaplayer.ie/'),
+ 'vmplayer':    ('Virgin Media Player', 'virginmedia',   'https://play.virginmediatelevision.ie/'),
  # United States
  'hulu':        ('Hulu',                'cib:hulu',      'https://www.hulu.com/'),
- 'max':         ('Max',                 'max',           'https://www.max.com/'),
+ 'max':         ('Max',                 'max',           'https://www.hbomax.com/'),
  'peacock':     ('Peacock',              None,           'https://www.peacocktv.com/'),
  'tubi':        ('Tubi',                'tubi',          'https://tubitv.com/'),
  'pluto':       ('Pluto TV',             None,           'https://pluto.tv/'),
@@ -36,7 +36,7 @@ S = {
  'sbs':         ('SBS On Demand',        None,           'https://www.sbs.com.au/ondemand'),
  'ninenow':     ('9Now',                 None,           'https://www.9now.com.au/'),
  'sevenplus':   ('7plus',                None,           'https://7plus.com.au/'),
- 'tenplay':     ('10 play',              None,           'https://10play.com.au/'),
+ 'tenplay':     ('10 play',              None,           'https://10.com.au/'),
  'stan':        ('Stan',                 None,           'https://www.stan.com.au/'),
  'binge':       ('Binge',                None,           'https://binge.com.au/'),
  # Germany
@@ -48,12 +48,12 @@ S = {
  'francetv':    ('france.tv',            None,           'https://www.france.tv/'),
  'arte':        ('ARTE',                 None,           'https://www.arte.tv/fr/'),
  'tf1':         ('TF1+',                 None,           'https://www.tf1.fr/'),
- 'm6':          ('M6+',                  None,           'https://www.6play.fr/'),
+ 'm6':          ('M6+',                  None,           'https://www.m6.fr/'),
  'canalplus':   ('Canal+',               None,           'https://www.canalplus.com/'),
  # Spain
  'rtveplay':    ('RTVE Play',            None,           'https://www.rtve.es/play/'),
  'atresplayer': ('Atresplayer',          None,           'https://www.atresplayer.com/'),
- 'mitele':      ('Mitele',               None,           'https://www.mitele.es/'),
+ 'mitele':      ('Mitele',               None,           'https://www.mediasetinfinity.es/'),
  # Italy
  'raiplay':     ('RaiPlay',              None,           'https://www.raiplay.it/'),
  'infinity':    ('Mediaset Infinity',    None,           'https://mediasetinfinity.mediaset.it/'),
@@ -63,9 +63,11 @@ S = {
  'videoland':   ('Videoland',            None,           'https://www.videoland.com/'),
 }
 
-AMAZON = {'uk':'www.amazon.co.uk','ie':None,'us':'www.amazon.com','ca':'www.amazon.ca',
-          'au':'www.amazon.com.au','de':'www.amazon.de','fr':'www.amazon.fr',
-          'es':'www.amazon.es','it':'www.amazon.it','nl':'www.amazon.nl'}
+# Markets without a working Amazon storefront path open primevideo.com, which is the
+# site Amazon's own Prime Video provider page names for most of them.
+AMAZON = {'uk':'www.amazon.co.uk','ie':None,'us':'www.amazon.com','ca':None,
+          'au':None,'de':'www.amazon.de','fr':None,
+          'es':None,'it':None,'nl':None}
 APPLE = {'uk':'gb','ie':'ie','us':'us','ca':'ca','au':'au','de':'de','fr':'fr',
          'es':'es','it':'it','nl':'nl'}
 YT = {k:(v.upper() if k!='uk' else 'GB') for k,v in APPLE.items()}
