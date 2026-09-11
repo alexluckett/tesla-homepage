@@ -50,6 +50,23 @@ Settings are stored in the browser's `localStorage` on the car. There are no coo
 | `?fs=0` or `?fs=off` | Never goes full screen. |
 | `?fs=all` or `?fs=on` | Sends every channel through the YouTube redirect, for a firmware where the full-screen view does not survive a normal link. |
 
+## Sections
+
+A bar along the bottom switches between three sections. Each keeps its own hidden channels
+and its own order, per country.
+
+| Section | Contents |
+| --- | --- |
+| **Media** | The streaming channels below. |
+| **Calls** | Google Meet, Microsoft Teams, Zoom, Webex, Jitsi Meet, Discord. |
+| **Charging** | A Better Routeplanner and PlugShare, plus Zap-Map in the UK and Chargemap across Europe. |
+
+Video calls need the camera and microphone, which the car's browser provides. Sign in and
+Meet, Teams and Zoom all list your scheduled meetings on their landing page — there is no
+comfortable way to type a meeting ID in a car.
+
+The Calls and Charging addresses have not been checked against a live server.
+
 ## Channels
 
 | Market | Channels |
@@ -80,7 +97,8 @@ Channels and markets live in the `<script id="data">` block in `index.html`:
   object keyed by market code for a regional URL. Leave out `p` and `t` for a name-only
   tile.
 - A market is `{"c": "uk", "f": "🇬🇧", "n": "United Kingdom", "ch": [channel ids]}`. The
-  dropdown is built from this list.
+  dropdown is built from this list. `ch` is the Media section; `calls` and `charging` hold
+  the other two, and `tabs` names them.
 
 Prime Video opens the Amazon storefront (`amazon.co.uk`, `.com`, `.de`) in the UK, US and
 Germany rather than `primevideo.com`. Accounts in those markets do not play on
@@ -99,6 +117,7 @@ Logos are inlined as SVG from these sets:
 | [selfh.st/icons](https://github.com/selfhst/icons) | CC BY 4.0 | Disney+, Prime Video |
 | [Streamline Logos](https://www.streamlinehq.com/) | CC BY 4.0 | BBC iPlayer |
 | [custom-brand-icons](https://github.com/elax46/custom-brand-icons) | CC BY-NC-SA 4.0 | Channel 5 |
+| [gilbarbara/logos](https://github.com/gilbarbara/logos) | CC0-1.0 | Microsoft Teams |
 
 The CC BY and CC BY-NC-SA licences require attribution, which this table provides. The
 Channel 5 mark is licensed for non-commercial use only; removing the `p`, `t` and `vb`
