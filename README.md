@@ -1,5 +1,7 @@
 # Front Row
 
+![Front Row's channel grid: rows of dark tiles with streaming-service logos, a country picker and an Edit button in the corner](docs/preview.png)
+
 A streaming launcher for the Tesla browser. Pick a country, tap a channel — every button
 routed through the YouTube redirect so the destination opens full screen.
 
