@@ -35,9 +35,9 @@ in the same full-screen view.
 ## Using it
 
 - **Country** — the dropdown sets which channels show and which regional site each one
-  opens. Defaults to the UK.
+  opens. Defaults to the UK. It is hidden in Calls, which is the same everywhere.
 - **Edit** — tap it or long-press any card. Tap a card to hide or show it; drag it to
-  reorder. Tap **Done** to finish. Hidden channels and order are saved per country.
+  reorder. Tap **Done** to finish. Every section supports this, including Calls.
 
 Settings are stored in the browser's `localStorage` on the car. There are no cookies.
 
@@ -53,7 +53,12 @@ Settings are stored in the browser's `localStorage` on the car. There are no coo
 ## Sections
 
 A bar along the bottom switches between three sections. Each keeps its own hidden channels
-and its own order, per country.
+and its own order.
+
+Media and Charging differ by country, so they show the country picker and save per country.
+Calls is the same list everywhere: it hides the picker, and saves one set for all countries
+— otherwise hiding something there, changing country in Media and coming back would quietly
+undo it.
 
 | Section | Contents |
 | --- | --- |
@@ -98,7 +103,8 @@ Channels and markets live in the `<script id="data">` block in `index.html`:
   tile.
 - A market is `{"c": "uk", "f": "🇬🇧", "n": "United Kingdom", "ch": [channel ids]}`. The
   dropdown is built from this list. `ch` is the Media section; `calls` and `charging` hold
-  the other two, and `tabs` names them.
+  the other two, and `tabs` names them. A `tabs` entry with `"r": 1` varies by country —
+  it shows the picker and saves per country; without it the section is the same everywhere.
 
 Prime Video opens the Amazon storefront (`amazon.co.uk`, `.com`, `.de`) in the UK, US and
 Germany rather than `primevideo.com`. Accounts in those markets do not play on
