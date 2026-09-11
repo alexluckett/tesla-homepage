@@ -7,26 +7,12 @@ channel.
 
 One file, no build step, no dependencies, no analytics and no third-party requests.
 
-## Host your own copy
-
-Front Row is not a hosted service. To use it, put `index.html` on a static host of your
-own and open that address in the car.
-
-The quickest route is GitHub Pages:
-
-1. Fork this repository.
-2. In your fork, go to **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to **Deploy from a branch**, choose
-   `main` and `/ (root)`, and save.
-4. After a minute the site is live at `https://<your-username>.github.io/tesla-front-row/`.
-
-Any other static host works the same way — Netlify, Cloudflare Pages, or your own server.
-Upload `index.html` and nothing else is needed.
+**Open it:** <https://alexluckett.github.io/tesla-front-row/>
 
 ## Set it up in the car
 
-1. Open your address in the car's browser with `?stay` on the end, for example
-   `https://<your-username>.github.io/tesla-front-row/?stay`.
+1. Open the address in the car's browser with `?stay` on the end:
+   `https://alexluckett.github.io/tesla-front-row/?stay`.
 2. Bookmark the page. `stay` removes itself from the address bar, so the bookmark saves a
    clean URL.
 3. Open the bookmark. The page passes through YouTube's "you are leaving YouTube" screen;
@@ -79,6 +65,12 @@ Settings are stored in the browser's `localStorage` on the car. There are no coo
 | 🇪🇸 Spain | + RTVE Play, Atresplayer, Mitele |
 | 🇮🇹 Italy | + RaiPlay, Mediaset Infinity, NOW |
 | 🇳🇱 Netherlands | + NPO Start, Videoland |
+
+## Host your own copy
+
+To change channels or run your own copy, fork this repository and turn on GitHub Pages in
+**Settings → Pages** (deploy from `main`, `/ (root)`). Any other static host works too:
+upload `index.html` and nothing else is needed.
 
 ## Changing channels
 
